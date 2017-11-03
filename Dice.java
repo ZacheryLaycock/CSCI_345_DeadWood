@@ -8,7 +8,7 @@ class Dice{
   }
   int diceRoll = 0;
   public int rollDice(){
-    diceRoll = Random.ints(0,6);
+    diceRoll = random.nextInt()%6 +1 ;
     System.out.println(diceRoll);
     return diceRoll;
   }
