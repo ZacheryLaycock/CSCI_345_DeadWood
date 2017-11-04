@@ -2,10 +2,12 @@ import java.util.*;
 
 class Bank{
 
-  public static void main(String[] args){
-    String player = args[0];
-  }
+  // unnecessary
+  int money = 0;
+  int fame = 0;
 
+  public Bank(){
+  }
   //set specific players money to whatever amount has been decided for on and off the job
   // on the job = 1;
   // off the job = 0;
