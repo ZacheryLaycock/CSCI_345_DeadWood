@@ -38,7 +38,11 @@ class Player{
   }
 
   public void changeRole(String role){
-    this.currentRole = role;
+    // on the card or off the card
+    // list the roles,
+
+    // player can only choose roles within ones rank
+    this.currentRole = role
   }
 
   public void rehearse(){
