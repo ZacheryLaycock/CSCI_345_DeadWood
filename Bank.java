@@ -28,7 +28,7 @@ class Bank{
   }
 
   int playerScore = 0;
-  private int computePlayerScore(String player){
+  public int computePlayerScore(String player){
     //playerScore = player.dollars() + player.fame() + 5*player.rank();
     return playerScore;
   }

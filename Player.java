@@ -8,25 +8,31 @@ class Player{
   int rehearsalBonuses;
   String location;
   public Player(int num){
-
+    location = "TrailerRoom";
+    money = 0;
     switch(num){
       // case 1 means 3 players
       case 1: rank = 1;
               fame = 0;
-              money = 0;
-              location = "TrailerRoom";
               break;
-      case 2: break;
-      case 3: break;
-      case 4: break;
-      case 5: break;
-      default: break;
+      case 2: rank = 1;
+              fame = 2;
+              break;
+      case 3: rank = 1;
+              fame = 4;
+              break;
+      case 4: rank = 2;
+              fame = 0;
+              break;
+      default:rank = 0;
+              fame = 0;
+              break;
     }
 
   }
 
   public void setRank(int rank){
-    this.rank = rank;
+    // call casting office to upgrade
   }
 
   public void setFame(int fame){
