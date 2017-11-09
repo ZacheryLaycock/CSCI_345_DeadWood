@@ -10,26 +10,68 @@ import org.w3c.dom.Element;
 
 class BoardManager{
 
-  int numberOfDays;
-  int numberOfPlayers;
-  ArrayList<Player> listOfPlayer = new ArrayList<Player>();
-  LinkedList<Integer> playerOrder;
-  int numberOfRemainingRoom;
 
-  public BoardManager(int numberOfPlayers){
-    // do a bunch of switch case
-      this.numberOfPlayers = numberOfPlayers;
-      this.numberOfRemainingRoom;
+    int numberOfDays;
+    int numberOfPlayers;
+    int numberOfRemainingRoom;
 
-  }
+    // game objects
+    ArrayList<Player> listOfPlayer = new ArrayList<Player>();
+    LinkedList<Integer> playerOrder;
+    Bank bank;
+    Dice dice;
+    LocationManager locationManager;
+    RehearsalManager rehearsalManager;
+    CastingOfficeRoom castingOffice;
+
+    public BoardManager(int numberOfPlayers){
+        if(numberOfPlayers < 4){
+          numberOfDays = 3;
+        }
+        else{
+          numberOfDays = 4;
+        }
+
+        this.numberOfPlayers = numberOfPlayers;
+        this.numberOfRemainingRoom =10;
+
+        setUp();
+    }
 
   public void setUp(){
+    //create players
+    int playerType;
+    switch(numberOfPlayers){
+      // start w 2 credits
+      case 5: playerType = 1;
+              break;
+      // start w 4 credits
+      case 6: playerType = 2;
+              break;
+      case 7: case 8:
+      // start rank 2
+              playerType = 3;
+              break;
+      // 0 money, 0 fame, rank 1
+      default: playerType = 0;
+              break;
+    }
+
+    for(int i = 0; i< numberOfPlayers; i++){
+      ArrayList.add(new Player(playerType));
+    }
+
+
+
     //determine play order
-    Bank bank = new Bank();
-    Dice dice = new Dice();
-    LocationManager locationManager = new LocationManager();
-    RehearsalManager rehearsalManager = new RehearsalManager();
-    CastingOfficeRoom castingOffice = new CastingOfficeRoom();
+    determinePlayOrder();
+
+    bank = new Bank();
+    dice = new Dice();
+    locationManager = new LocationManager();
+    rehearsalManager = new RehearsalManager();
+    castingOffice = new CastingOfficeRoom();
+
     // a bunch of set rooms with roles
     // parse through xml file to build rooms
     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -41,26 +83,29 @@ class BoardManager{
 
     }
 
-
+    // a bunch of set rooms with roles
           // set room organized into an arraylist
     // a bunch of scene card with roles
           // scene cards organized into an arraylist
 
   }
 
-  public void refreshGameBoard(){
-    // shuffle deck, assign cards to rooms
-    // return player to TrailerRoom
-    // reset shot markers
-  }
 
-  public void endGame(){
-    // iterate through a player set and calculate score of each
-  }
 
   private LinkedList<Integer> determinePlayOrder(){
-    return new LinkedList<Integer>();
+    LinkedList<Integer> playerOrder = new LinkedList<Integer>();
+    ArrayList<Integer> diceRoll = new ArrayList<Integer>();
+
+    for(int i = 0; i < numberOfPlayers; i++){
+      diceRoll.add(dice.rollDice());
+    }
+    Collections.sort(diceRoll);
+    Collections.reverse
+
+
+    return playerOrder;
   }
+
 
   private void parseRooms(){
 
@@ -69,4 +114,17 @@ class BoardManager{
   private void parseCards(){
 
   }
+
+
+  public void refreshGameBoard(){
+    // shuffle deck, assign cards to rooms
+    // return player to TrailerRoom
+    // reset shot markers
+  }
+
+
+  public void endGame(){
+    // iterate through a player set and calculate score of each
+  }
+
 }
