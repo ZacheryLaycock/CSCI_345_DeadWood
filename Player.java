@@ -48,7 +48,7 @@ class Player{
     // list the roles,
 
     // player can only choose roles within ones rank
-    this.currentRole = role
+    this.currentRole = role;
   }
 
   public void rehearse(){

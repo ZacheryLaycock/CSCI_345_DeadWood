@@ -6,6 +6,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import java.util.Collections;
 
 
 class BoardManager{
@@ -58,7 +59,7 @@ class BoardManager{
     }
 
     for(int i = 0; i< numberOfPlayers; i++){
-      ArrayList.add(new Player(playerType));
+      listOfPlayer.add(new Player(playerType));
     }
 
 
@@ -94,16 +95,33 @@ class BoardManager{
 
   private LinkedList<Integer> determinePlayOrder(){
     LinkedList<Integer> playerOrder = new LinkedList<Integer>();
-    ArrayList<Integer> diceRoll = new ArrayList<Integer>();
+    int max = roll(numberOfPlayers);
+
+    for(int i = 0; i< numberOfPlayers; i++){
+        if(max == -1){
+          max += numberOfPlayers;
+        }
+        playerOrder.add(max);
+        max--;
+    }
+
+    return playerOrder;
+  }
+
+  private int roll(int equalRolls){
+    int max;
 
     for(int i = 0; i < numberOfPlayers; i++){
       diceRoll.add(dice.rollDice());
     }
-    Collections.sort(diceRoll);
-    Collections.reverse
 
+    max = Collections.max(diceRoll);
+    numOfEqualRolls = Collections.frequency(diceRoll,max);
+    if(numOfEqualRolls > 1){
+      return Roll(numOfEqualRolls);
+    }
 
-    return playerOrder;
+    return max;
   }
 
 
