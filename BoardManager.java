@@ -109,7 +109,9 @@ class BoardManager{
   }
 
   private int roll(int equalRolls){
+    ArrayList<Integer> diceRoll = new ArrayList<Integer>();
     int max;
+    int numOfEqualRolls;
 
     for(int i = 0; i < numberOfPlayers; i++){
       diceRoll.add(dice.rollDice());
@@ -118,7 +120,7 @@ class BoardManager{
     max = Collections.max(diceRoll);
     numOfEqualRolls = Collections.frequency(diceRoll,max);
     if(numOfEqualRolls > 1){
-      return Roll(numOfEqualRolls);
+      return roll(numOfEqualRolls);
     }
 
     return max;
