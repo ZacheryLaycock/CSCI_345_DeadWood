@@ -6,6 +6,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import java.util.Collections;
 
 
 class BoardManager{
@@ -23,6 +24,7 @@ class BoardManager{
     LocationManager locationManager;
     RehearsalManager rehearsalManager;
     CastingOfficeRoom castingOffice;
+    ArrayList<Room> roomList = new ArrayList<Room>();
 
     public BoardManager(int numberOfPlayers){
         if(numberOfPlayers < 4){
@@ -58,7 +60,7 @@ class BoardManager{
     }
 
     for(int i = 0; i< numberOfPlayers; i++){
-      ArrayList.add(new Player(playerType));
+      listOfPlayer.add(new Player(playerType));
     }
 
 
@@ -106,16 +108,40 @@ class BoardManager{
 
   private LinkedList<Integer> determinePlayOrder(){
     LinkedList<Integer> playerOrder = new LinkedList<Integer>();
+    int max = roll(numberOfPlayers);
+
+    for(int i = 0; i< numberOfPlayers; i++){
+        if(max == -1){
+          max += numberOfPlayers;
+        }
+        playerOrder.add(max);
+        max--;
+    }
+
+    return playerOrder;
+  }
+
+  private int roll(int equalRolls){
     ArrayList<Integer> diceRoll = new ArrayList<Integer>();
+    int max;
+    int numOfEqualRolls;
 
     for(int i = 0; i < numberOfPlayers; i++){
       diceRoll.add(dice.rollDice());
     }
+<<<<<<< HEAD
     Collections.sort(diceRoll);
     Collections.reverse();
+=======
+>>>>>>> 044014243491dd4f3028305bb0f3d52c6c91ea8d
 
+    max = Collections.max(diceRoll);
+    numOfEqualRolls = Collections.frequency(diceRoll,max);
+    if(numOfEqualRolls > 1){
+      return roll(numOfEqualRolls);
+    }
 
-    return playerOrder;
+    return max;
   }
 
 
@@ -128,6 +154,17 @@ class BoardManager{
   }
 
 
+  public Room findRoom(String location){
+    for(int i = 0; i< roomList.size(); i ++){
+      if(roomList.get(i).getName().equals(location)){
+        return roomList.get(i);
+      }
+    }
+    System.out.println("no room found");
+    return null;
+  }
+
+
   public void refreshGameBoard(){
     // shuffle deck, assign cards to rooms
     // return player to TrailerRoom
@@ -136,7 +173,13 @@ class BoardManager{
 
 
   public void endGame(){
-    // iterate through a player set and calculate score of each
+    ArrayList<Integer> scoreArray = new ArrayList<Integer>();
+    for(int i = 0; i < numberOfPlayers; i++){
+      scoreArray.add(bank.computePlayerScore(listOfPlayer.get(i)));
+    }
+    // haven't taken into account many players with the same score
+    int winner = listOfPlayer(scoreArray.indexOf(Collections.max(scoreArray)));
+    // announce winner
   }
 
 }
