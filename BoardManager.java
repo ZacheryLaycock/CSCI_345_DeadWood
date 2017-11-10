@@ -24,6 +24,7 @@ class BoardManager{
     LocationManager locationManager;
     RehearsalManager rehearsalManager;
     CastingOfficeRoom castingOffice;
+    ArrayList<Room> roomList = new ArrayList<Room>();
 
     public BoardManager(int numberOfPlayers){
         if(numberOfPlayers < 4){
@@ -136,6 +137,17 @@ class BoardManager{
   }
 
 
+  public Room findRoom(String location){
+    for(int i = 0; i< roomList.size(); i ++){
+      if(roomList.get(i).getName().equals(location)){
+        return roomList.get(i);
+      }
+    }
+    System.out.println("no room found");
+    return null;
+  }
+
+
   public void refreshGameBoard(){
     // shuffle deck, assign cards to rooms
     // return player to TrailerRoom
@@ -144,7 +156,13 @@ class BoardManager{
 
 
   public void endGame(){
-    // iterate through a player set and calculate score of each
+    ArrayList<Integer> scoreArray = new ArrayList<Integer>();
+    for(int i = 0; i < numberOfPlayers; i++){
+      scoreArray.add(bank.computePlayerScore(listOfPlayer.get(i)));
+    }
+    // haven't taken into account many players with the same score
+    int winner = listOfPlayer(scoreArray.indexOf(Collections.max(scoreArray)));
+    // announce winner
   }
 
 }
