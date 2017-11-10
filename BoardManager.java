@@ -74,14 +74,7 @@ class BoardManager{
 
     // a bunch of set rooms with roles
     // parse through xml file to build rooms
-    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-    Document doc = dBuilder.parse(board.xml);
-    doc.getDocumentElement().normalize();
-    NodeList nList = doc.getElementsByTagName("set");
-    for (int i = 0; i < nList.getLength(); i++){
-
-    }
+    boardXML("board.xml");
 
     // a bunch of set rooms with roles
           // set room organized into an arraylist
@@ -90,7 +83,26 @@ class BoardManager{
 
   }
 
-
+  private void boardXML(String filename){
+    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+    Document doc = dBuilder.parse(filename);
+    doc.getDocumentElement().normalize();
+    NodeList nList = doc.getElementsByTagName("set");
+    for (int i = 0; i < nList.getLength(); i++){
+      Node nNode = nList.item(i);
+      if (nNode.getNodeType() == Node.ELEMENT_NODE){
+        Element eElement = (Element) nNode;
+        String name = eElement.getAttribute("name");
+        //neighbors = eElement.getElementsByTagName("")
+        //int takes = eElement.getElementsByTagName("takes").getLength();
+        Node takes = eElement.getElementsByTagName("takes").item(0);
+        int numTakes = takes.getElementsByTagName("take").getLength();
+        SetRoom newRoom = new SetRoom();
+        System.out.println(numTakes);
+      }
+    }
+  }
 
   private LinkedList<Integer> determinePlayOrder(){
     LinkedList<Integer> playerOrder = new LinkedList<Integer>();
@@ -100,7 +112,7 @@ class BoardManager{
       diceRoll.add(dice.rollDice());
     }
     Collections.sort(diceRoll);
-    Collections.reverse
+    Collections.reverse();
 
 
     return playerOrder;
