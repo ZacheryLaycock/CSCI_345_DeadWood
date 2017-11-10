@@ -4,6 +4,7 @@ import java.util.LinkedList;
 class Room{
 
   LinkedList<String> adjacentRooms;
+  int[] area = new int[4];
   String name;
 
   public Room(String name, LinkedList<String> adjacentRooms){

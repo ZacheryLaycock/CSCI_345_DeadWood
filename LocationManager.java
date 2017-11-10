@@ -13,27 +13,27 @@ class LocationManager{
 
 
   // updatePlayerLocation call this
-  public void availableLocation(String currentLocation){
-    neighbors = BoardManager.findRoom(currentLocation).findAdjacentRooms();
-    System.out.println("neighbors of " + currentLocation + ": ");
-    for(int i = 0; i < neighbors.size(); i++){
-      System.out.println(i +". " +neighbors.get(i));
-    }
-    return;
-  }
+  // public void  availableLocation(String currentLocation){
+  //   neighbors = BoardManager.findRoom(currentLocation).findAdjacentRooms();
+  //   System.out.println("neighbors of " + currentLocation + ": ");
+  //   for(int i = 0; i < neighbors.size(); i++){
+  //     System.out.println(i +". " +neighbors.get(i));
+  //   }
+  //   return;
+  // }
 
   // player call this
-  public void updatePlayerLocation(String currentLocation){
-    int option;
+  public String updatePlayerLocation(String currentLocation){
+    int option = -1;
 
-    availableLocation(currentLocation);
+    //availableLocation(currentLocation);
 
     while(option<neighbors.size()){
       System.out.print("move to: ");
       option = scanner.nextInt();
     }
 
-    return neighbors.get(i);
+    return neighbors.get(option);
 
     // move if legal input
     // if not call availableLocation

@@ -24,9 +24,9 @@ class CastingOfficeRoom extends Room{
       return fame;
     }
 
-    public toString(){
-      return this.money + "\t" + this.fame;
-    }
+    // public toString(){
+    //   return this.money + "\t" + this.fame;
+    // }
   }
 
   public CastingOfficeRoom(){
@@ -36,8 +36,8 @@ class CastingOfficeRoom extends Room{
   }
 
   // new rank if successful, or 0 if fail
-  private int upgradeWithMoney(int rank, int money){
-    int cost = upgradeCost.getValue(rank).getMoney();
+  public int upgradeWithMoney(int rank, int money){
+    int cost = upgradeCost.get(rank).getMoney();
     if(cost <= money){
       return cost;
     }
@@ -47,8 +47,8 @@ class CastingOfficeRoom extends Room{
     }
   }
 
-  private int upgradeWithFame(int rank, int fame){
-    int cost = upgradeCost.getValue(rank).getFame();
+  public int upgradeWithFame(int rank, int fame){
+    int cost = upgradeCost.get(rank).getFame();
     if(cost <= fame){
       return cost;
     }

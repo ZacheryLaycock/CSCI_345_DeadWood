@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
@@ -64,19 +65,22 @@ class BoardManager{
     }
 
 
-
-    //determine play order
-    determinePlayOrder();
-
     bank = new Bank();
     dice = new Dice();
     locationManager = new LocationManager();
     rehearsalManager = new RehearsalManager();
     castingOffice = new CastingOfficeRoom();
+    //determine play order
+    determinePlayOrder();
+
+
 
     // a bunch of set rooms with roles
     // parse through xml file to build rooms
-    boardXML("board.xml");
+    roomList = XML_Test.boardXML("board.xml");
+    for (int i = 0; i < roomList.size(); i++){
+      System.out.println(roomList.get(i).getName());
+    }
 
     // a bunch of set rooms with roles
           // set room organized into an arraylist
@@ -86,24 +90,7 @@ class BoardManager{
   }
 
   private void boardXML(String filename){
-    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-    Document doc = dBuilder.parse(filename);
-    doc.getDocumentElement().normalize();
-    NodeList nList = doc.getElementsByTagName("set");
-    for (int i = 0; i < nList.getLength(); i++){
-      Node nNode = nList.item(i);
-      if (nNode.getNodeType() == Node.ELEMENT_NODE){
-        Element eElement = (Element) nNode;
-        String name = eElement.getAttribute("name");
-        //neighbors = eElement.getElementsByTagName("")
-        //int takes = eElement.getElementsByTagName("takes").getLength();
-        Node takes = eElement.getElementsByTagName("takes").item(0);
-        int numTakes = takes.getElementsByTagName("take").getLength();
-        SetRoom newRoom = new SetRoom();
-        System.out.println(numTakes);
-      }
-    }
+
   }
 
   private LinkedList<Integer> determinePlayOrder(){
@@ -129,11 +116,7 @@ class BoardManager{
     for(int i = 0; i < numberOfPlayers; i++){
       diceRoll.add(dice.rollDice());
     }
-<<<<<<< HEAD
-    Collections.sort(diceRoll);
-    Collections.reverse();
-=======
->>>>>>> 044014243491dd4f3028305bb0f3d52c6c91ea8d
+
 
     max = Collections.max(diceRoll);
     numOfEqualRolls = Collections.frequency(diceRoll,max);
@@ -145,24 +128,17 @@ class BoardManager{
   }
 
 
-  private void parseRooms(){
-
-  }
-
-  private void parseCards(){
-
-  }
 
 
-  public Room findRoom(String location){
-    for(int i = 0; i< roomList.size(); i ++){
-      if(roomList.get(i).getName().equals(location)){
-        return roomList.get(i);
-      }
-    }
-    System.out.println("no room found");
-    return null;
-  }
+  // public Room findRoom(String location){
+  //   for(int i = 0; i < roomList.size(); i++){
+  //       if(roomList.get(i).getName().equals(location)){
+  //       return roomList.get(i);
+  //     }
+  //   }
+  //   System.out.println("no room found");
+  //   return null;
+  // }
 
 
   public void refreshGameBoard(){
@@ -178,7 +154,7 @@ class BoardManager{
       scoreArray.add(bank.computePlayerScore(listOfPlayer.get(i)));
     }
     // haven't taken into account many players with the same score
-    int winner = listOfPlayer(scoreArray.indexOf(Collections.max(scoreArray)));
+    Player winner = listOfPlayer.get(scoreArray.indexOf(Collections.max(scoreArray)));
     // announce winner
   }
 

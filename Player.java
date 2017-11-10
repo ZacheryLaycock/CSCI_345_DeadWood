@@ -36,20 +36,22 @@ class Player{
     Scanner scanner = new Scanner(System.in);
     int option;
     int rank;
-    int cost;
+    int cost = 0;
 
     castingOffice.listOptions();
 
     System.out.println("which rank would you like?");
     rank = scanner.nextInt();
     System.out.println("how do you want to upgrade? money(0) or fame(1)?");
-    option = nextInt();
+    option = scanner.nextInt();
 
-    if (option == 1){
-      cost = castingOffice.upgradeWithFame(rank, fame);
-    }
-    else if (option == 0){
-      cost = castingOffice.upgradeWithMoney(rank, money);
+    while(option != 1 || option != 0){
+      if (option == 1){
+        cost = castingOffice.upgradeWithFame(rank, fame);
+      }
+      else if (option == 0){
+        cost = castingOffice.upgradeWithMoney(rank, money);
+      }
     }
 
     if(cost != 0){
@@ -62,7 +64,7 @@ class Player{
     }
 
     while(cost == 0){
-      System.out.println("do still want to upgrade? no(0) yes(1)")
+      System.out.println("do still want to upgrade? no(0) yes(1)");
       option = scanner.nextInt();
       if(option == 0) break;
       setRank(castingOffice);
@@ -94,7 +96,7 @@ class Player{
     // location manager presents options
     // choose an option
     // if legal then move
-    this.location = locationManager.updatePlayerLocation();
+    this.location = locationManager.updatePlayerLocation(location);
   }
 
 }

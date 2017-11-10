@@ -28,7 +28,7 @@ class Bank{
   }
 
   public int computePlayerScore(Player player){
-    return player.dollars() + player.fame() + 5*player.rank();
+    return player.money + player.fame + 5*player.rank;
   }
 
 }

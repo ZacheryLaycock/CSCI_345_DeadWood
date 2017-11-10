@@ -7,16 +7,31 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-
+import java.util.LinkedList;
+import java.util.HashMap;
 
 public class XML_Test{
+
 
   public static void main(String[] args){
   boardXML("board.xml");
   }
 
-  private static void boardXML(String filename){
+  public static ArrayList<Room> boardXML(String filename){
     try{
+      ArrayList<Room> roomList = new ArrayList<Room>();
+      String roomName;
+      String roleName;
+      int roleLevel;
+      LinkedList<String> neighbors = new LinkedList<String>();
+      int[] area = new int[4];
+      int[] roleArea = new int[4];
+      int[] shotMarkersArea = new int[4];
+      String description ="";
+      ArrayList<Role> roleArray = new ArrayList<Role>();
+      Role role;
+      HashMap<Integer, int[]> shotMarkers = new HashMap<Integer, int[]>();
+
       DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
       Document doc = dBuilder.parse(filename);
@@ -27,69 +42,74 @@ public class XML_Test{
         if (nNode.getNodeType() == Node.ELEMENT_NODE){
           Element eElement = (Element) nNode;
           String name = eElement.getAttribute("name");
-          System.out.println(name);
-          ///////////////////////////////////////////////////////////////////
+          //System.out.println(name);
+          // ROOM NAME
+          roomName = name;
           NodeList attributeList = eElement.getChildNodes();
-          //for (int y = 0; y < attributeList.getLength(); y++){
-            // if (bacon.getNodeType() == Node.ELEMENT_NODE){
-            //   Element aElement = (Element) bacon;
-            //   String cheese = aElement.getAttribute("name");
-            //   System.out.println(cheese);
-            // }
+
 
             for(int z = 0; z< attributeList.getLength(); z++){
               if(attributeList.item(z) instanceof Element){
-                System.out.println(attributeList.item(z).getNodeName());
+                //System.out.println(attributeList.item(z).getNodeName());
+                neighbors.clear();
 
-                //System.out.println();
                 if(attributeList.item(z).getNodeName() == "neighbors"){
                   Element jones = (Element)attributeList.item(z);
                   NodeList johnson = jones.getChildNodes();
                   for(int w = 0; w< johnson.getLength(); w++){
                     if(johnson.item(w) instanceof Element){
-                      System.out.println(johnson.item(w).getNodeName() + " " + ((Element)johnson.item(w)).getAttribute("name"));
+                      //System.out.println(johnson.item(w).getNodeName() + " " + ((Element)johnson.item(w)).getAttribute("name"));
+                      // ADD NEIGHBORS TO LINKED LIST
+                      neighbors.add(((Element)johnson.item(w)).getAttribute("name"));
                     }
                   }
                 }
 
                 if(attributeList.item(z).getNodeName() == "area"){
-                  System.out.println(" " + ((Element)attributeList.item(z)).getAttribute("x")
-                                   + " " + ((Element)attributeList.item(z)).getAttribute("y")
-                                   + " " + ((Element)attributeList.item(z)).getAttribute("h")
-                                   + " " + ((Element)attributeList.item(z)).getAttribute("w"));
+                  //System.out.println(" " + ((Element)attributeList.item(z)).getAttribute("x")
+                  //                 + " " + ((Element)attributeList.item(z)).getAttribute("y")
+                  //                 + " " + ((Element)attributeList.item(z)).getAttribute("h")
+                  //                 + " " + ((Element)attributeList.item(z)).getAttribute("w"));
+                  area[0] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("x"));
+                  area[1] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("y"));
+                  area[2] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("h"));
+                  area[3] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("w"));
+
+
                 }
 
 
-                // if(attributeList.item(z).getNodeName() == "area"){
-                //   Element jones = (Element)attributeList.item(z);
-                //   NodeList johnson = jones.getChildNodes();
-                //   for(int w = 0; w< johnson.getLength(); w++){
-                //     if(johnson.item(w) instanceof Element){
-                //       System.out.println(johnson.item(w).getNodeName() + " " + ((Element)johnson.item(w)).getAttribute("x") + " " + ((Element)johnson.item(w)).getAttribute("y")
-                //                                                        + " " + ((Element)johnson.item(w)).getAttribute("h") + " " + ((Element)johnson.item(w)).getAttribute("w"));
-                //     }
-                //   }
-                // }
                 if(attributeList.item(z).getNodeName() == "takes"){
+                  //SHOT MARKERS
                   Element jones = (Element)attributeList.item(z);
                   NodeList johnson = jones.getChildNodes();
                   for(int w = 0; w< johnson.getLength(); w++){
                     if(johnson.item(w) instanceof Element){
-                      System.out.print(johnson.item(w).getNodeName() + " " + ((Element)johnson.item(w)).getAttribute("number"));
+                      //System.out.print(johnson.item(w).getNodeName() + " " + ((Element)johnson.item(w)).getAttribute("number"));
+                      // number of shot MARKERS
+
 
                       Element jon = (Element)johnson.item(w);
                       NodeList steve = jon.getChildNodes();
                       for(int o = 0; o<steve.getLength(); o++){
                         if(steve.item(o) instanceof Element){
-                          System.out.println(" " + ((Element)steve.item(o)).getAttribute("x")
-                                           + " " + ((Element)steve.item(o)).getAttribute("y")
-                                           + " " + ((Element)steve.item(o)).getAttribute("h")
-                                           + " " + ((Element)steve.item(o)).getAttribute("w"));
+                          // System.out.println(" " + ((Element)steve.item(o)).getAttribute("x")
+                          //                  + " " + ((Element)steve.item(o)).getAttribute("y")
+                          //                  + " " + ((Element)steve.item(o)).getAttribute("h")
+                          //                  + " " + ((Element)steve.item(o)).getAttribute("w"));
+                          shotMarkersArea[0] = Integer.parseInt(((Element)steve.item(o)).getAttribute("x"));
+                          shotMarkersArea[1] = Integer.parseInt(((Element)steve.item(o)).getAttribute("y"));
+                          shotMarkersArea[2] = Integer.parseInt(((Element)steve.item(o)).getAttribute("h"));
+                          shotMarkersArea[3] = Integer.parseInt(((Element)steve.item(o)).getAttribute("w"));
+
+                          shotMarkers.put(w, shotMarkersArea);
                         }
                       }
                     }
                   }
                 }
+
+                //ROLE OBJECTS
                 if(attributeList.item(z).getNodeName() == "parts"){
                   //jones = parts
                   Element jones = (Element)attributeList.item(z);
@@ -97,8 +117,9 @@ public class XML_Test{
                   NodeList johnson = jones.getChildNodes();
                   for(int w = 0; w< johnson.getLength(); w++){
                     if(johnson.item(w) instanceof Element){
-                      System.out.println(johnson.item(w).getNodeName() + " " + ((Element)johnson.item(w)).getAttribute("name") + " level = " + ((Element)johnson.item(w)).getAttribute("level"));
-
+                      //System.out.println(johnson.item(w).getNodeName() + " " + ((Element)johnson.item(w)).getAttribute("name") + " level = " + ((Element)johnson.item(w)).getAttribute("level"));
+                      roleName =  ((Element)johnson.item(w)).getAttribute("name") ;
+                      roleLevel = Integer.parseInt(((Element)johnson.item(w)).getAttribute("level"));
                       //jon = area
                       // Element jon = (Element)johnson.item(w);
                       // //steve = area or line
@@ -109,52 +130,41 @@ public class XML_Test{
                       for(int o = 0; o <steve.getLength(); o++){
                         if(steve.item(o) instanceof Element){
                           if(steve.item(o).getNodeName().equals("area")){
-                          System.out.println(" area =" + " " + ((Element)steve.item(o)).getAttribute("x")
-                                           + " " + ((Element)steve.item(o)).getAttribute("y")
-                                           + " " + ((Element)steve.item(o)).getAttribute("h")
-                                           + " " + ((Element)steve.item(o)).getAttribute("w"));
+                          // System.out.println(" area =" + " " + ((Element)steve.item(o)).getAttribute("x")
+                          //                  + " " + ((Element)steve.item(o)).getAttribute("y")
+                          //                  + " " + ((Element)steve.item(o)).getAttribute("h")
+                          //                  + " " + ((Element)steve.item(o)).getAttribute("w"));
+                          roleArea[0] = Integer.parseInt(((Element)steve.item(o)).getAttribute("x"));
+                          roleArea[1] = Integer.parseInt(((Element)steve.item(o)).getAttribute("y"));
+                          roleArea[2] = Integer.parseInt(((Element)steve.item(o)).getAttribute("h"));
+                          roleArea[3] = Integer.parseInt(((Element)steve.item(o)).getAttribute("w"));
+
                           }
                           else if(steve.item(o).getNodeName().equals("line")){
-                          System.out.println(" line =" + ((Element)steve.item(o)).getTextContent());
+                          //System.out.println(" line =" + ((Element)steve.item(o)).getTextContent());
+                          //DESCRIPTION
+                          description = ((Element)steve.item(o)).getTextContent();
                           }
                         }
                       }
-                      // //Element cheese = (Element)johnson.item(w);
-                      // // NodeList bacon = cheese.getChildNodes();
-                      //  System.out.println(line.getTextContent());
+                      role = new Role(roleName, description, roleLevel, roleArea);
+                      roleArray.add(role);
+                      //System.out.println(role.toString());
+
                     }
                   }
                 }
-                //System.out.println();
-                }
               }
-
-
-                // NamedNodeMap innerStuff = attributeList.item(z).getAttributes();
-                // for(int w=0; w< innerStuff.getLength(); w++){
-                //   Node attr = innerStuff.item(i);
-                //   System.out.println(attr.getNodeName() + " = " + attr.getNodeValue());
-                // }
-
-
-
-            // Node bacon = attributeList.item(y);
-            //System.out.println(attributeList.item(y).getAttributes().getNamedItem("name").getNodeValue());
-
-          //  }
+            }
+            roomList.add(new SetRoom(roomName, roleArray.size(), roleArray, neighbors, shotMarkers));
           }
-          //int takes = eElement.getElementsByTagName("takes").getLength();
-          // Node takes = eElement.getElementsByTagName("takes").item(0);
-          // takes = (Element) takes;
-          // int numTakes = takes.getElementsByTagName("take").getLength();
-        //  SetRoom newRoom = new SetRoom();
-          // System.out.println(numTakes);
         }
+        return roomList;
       }
   catch(Exception e){
     e.printStackTrace();
   }
-
+    return null;
   }
 
 }

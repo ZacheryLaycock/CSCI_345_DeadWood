@@ -3,13 +3,14 @@ import java.util.Random;
 
 class Dice{
 
+  Random rand;
   public Dice(){
+    rand = new Random();
   }
-  
-  int diceRoll = 0;
+
   public int rollDice(){
-    diceRoll = 0; //Will implement some RNG between 1 and 6
-    return diceRoll;
+    int randomNum = rand.nextInt()%6 + 1;
+    return randomNum;
   }
 
 }
