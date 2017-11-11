@@ -79,7 +79,7 @@ class BoardManager{
     // parse through xml file to build rooms
     roomList = XML_Test.boardXML("board.xml");
     for (int i = 0; i < roomList.size(); i++){
-      System.out.println(roomList.get(i).getName());
+      System.out.println(roomList.get(i).toString());
     }
 
     // a bunch of set rooms with roles

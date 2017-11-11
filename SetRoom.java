@@ -38,9 +38,8 @@ class SetRoom extends Room{
   public void resetShotMarkers(){
     maxShotMarkers = shotMarkers.size();
   }
-  //
-  //
-  //
-  //
-  //
+
+  public String toString(){
+    return "Name :" + super.name;
+  }
 }

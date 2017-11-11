@@ -8,6 +8,7 @@ class Room{
   String name;
 
   public Room(String name, LinkedList<String> adjacentRooms){
+    this.name = name;
     this.adjacentRooms = adjacentRooms;
   }
 
@@ -17,6 +18,5 @@ class Room{
 
   public LinkedList<String> findAdjacentRooms(){
     return adjacentRooms;
-  }
-
+}
 }
