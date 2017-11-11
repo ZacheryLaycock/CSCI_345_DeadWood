@@ -30,7 +30,7 @@ class CastingOfficeRoom extends Room{
   }
 
   public CastingOfficeRoom(){
-    super("CastingOfficeRoom",new LinkedList<String>());
+    super("CastingOfficeRoom",new LinkedList<String>(), new int[4]);
     upgradeCost = new HashMap<Integer,Cost>();
     //populate
   }

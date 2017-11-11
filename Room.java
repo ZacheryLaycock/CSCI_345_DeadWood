@@ -7,7 +7,8 @@ class Room{
   int[] area = new int[4];
   String name;
 
-  public Room(String name, LinkedList<String> adjacentRooms){
+  public Room(String name, LinkedList<String> adjacentRooms, int[] area ){
+    this.area = area;
     this.name = name;
     this.adjacentRooms = adjacentRooms;
   }
@@ -19,4 +20,8 @@ class Room{
   public LinkedList<String> findAdjacentRooms(){
     return adjacentRooms;
 }
+
+  public String toString(){
+    return "Name :" + name;
+  }
 }

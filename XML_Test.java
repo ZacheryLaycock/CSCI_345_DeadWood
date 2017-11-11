@@ -36,21 +36,68 @@ public class XML_Test{
       DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
       Document doc = dBuilder.parse(filename);
       doc.getDocumentElement().normalize();
+
+
+      NodeList trailerL = doc.getElementsByTagName("trailer");
+      for (int k = 0; k < trailerL.getLength(); k++){
+        System.out.println(trailerL.getLength());
+        Node nNode = trailerL.item(k);
+        if (nNode.getNodeType() == Node.ELEMENT_NODE){
+          Element eElement = (Element) nNode;
+          NodeList attributeList = eElement.getChildNodes();
+          for(int z = 0; z< attributeList.getLength(); z++){
+            if(attributeList.item(z) instanceof Element){
+              neighbors.clear();
+
+              if(attributeList.item(z).getNodeName() == "neighbors"){
+                Element jones = (Element)attributeList.item(z);
+                NodeList johnson = jones.getChildNodes();
+                for(int w = 0; w< johnson.getLength(); w++){
+                  if(johnson.item(w) instanceof Element){
+                    // ADD NEIGHBORS TO LINKED LIST
+                    neighbors.add(((Element)johnson.item(w)).getAttribute("name"));
+                    System.out.println(((Element)johnson.item(w)).getAttribute("name"));
+                  }
+                }
+              }
+
+              //if(attributeList.item(z) instanceof Element){
+                if(attributeList.item(z).getNodeName().equals("area")){
+
+                area[0] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("x"));
+                area[1] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("y"));
+                area[2] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("h"));
+                area[3] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("w"));
+                System.out.println(((Element)attributeList.item(z)).getAttribute("x")+" "+((Element)attributeList.item(z)).getAttribute("y")
+                +" "+((Element)attributeList.item(z)).getAttribute("h")+" "+((Element)attributeList.item(z)).getAttribute("w"));
+              //}
+            }
+
+          }
+        }
+      }
+      roomList.add( new Room("Trailer", neighbors, area));
+    }
+
+
+
+
+
       NodeList nList = doc.getElementsByTagName("set");
+
       for (int i = 0; i < nList.getLength(); i++){
         Node nNode = nList.item(i);
         if (nNode.getNodeType() == Node.ELEMENT_NODE){
           Element eElement = (Element) nNode;
           String name = eElement.getAttribute("name");
-          //System.out.println(name);
           // ROOM NAME
           roomName = name;
           NodeList attributeList = eElement.getChildNodes();
+          //System.out.println(name);
 
 
             for(int z = 0; z< attributeList.getLength(); z++){
               if(attributeList.item(z) instanceof Element){
-                //System.out.println(attributeList.item(z).getNodeName());
                 neighbors.clear();
 
                 if(attributeList.item(z).getNodeName() == "neighbors"){
@@ -58,7 +105,6 @@ public class XML_Test{
                   NodeList johnson = jones.getChildNodes();
                   for(int w = 0; w< johnson.getLength(); w++){
                     if(johnson.item(w) instanceof Element){
-                      //System.out.println(johnson.item(w).getNodeName() + " " + ((Element)johnson.item(w)).getAttribute("name"));
                       // ADD NEIGHBORS TO LINKED LIST
                       neighbors.add(((Element)johnson.item(w)).getAttribute("name"));
                     }
@@ -66,10 +112,7 @@ public class XML_Test{
                 }
 
                 if(attributeList.item(z).getNodeName() == "area"){
-                  //System.out.println(" " + ((Element)attributeList.item(z)).getAttribute("x")
-                  //                 + " " + ((Element)attributeList.item(z)).getAttribute("y")
-                  //                 + " " + ((Element)attributeList.item(z)).getAttribute("h")
-                  //                 + " " + ((Element)attributeList.item(z)).getAttribute("w"));
+
                   area[0] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("x"));
                   area[1] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("y"));
                   area[2] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("h"));
@@ -85,7 +128,6 @@ public class XML_Test{
                   NodeList johnson = jones.getChildNodes();
                   for(int w = 0; w< johnson.getLength(); w++){
                     if(johnson.item(w) instanceof Element){
-                      //System.out.print(johnson.item(w).getNodeName() + " " + ((Element)johnson.item(w)).getAttribute("number"));
                       // number of shot MARKERS
 
 
@@ -93,10 +135,7 @@ public class XML_Test{
                       NodeList steve = jon.getChildNodes();
                       for(int o = 0; o<steve.getLength(); o++){
                         if(steve.item(o) instanceof Element){
-                          // System.out.println(" " + ((Element)steve.item(o)).getAttribute("x")
-                          //                  + " " + ((Element)steve.item(o)).getAttribute("y")
-                          //                  + " " + ((Element)steve.item(o)).getAttribute("h")
-                          //                  + " " + ((Element)steve.item(o)).getAttribute("w"));
+
                           shotMarkersArea[0] = Integer.parseInt(((Element)steve.item(o)).getAttribute("x"));
                           shotMarkersArea[1] = Integer.parseInt(((Element)steve.item(o)).getAttribute("y"));
                           shotMarkersArea[2] = Integer.parseInt(((Element)steve.item(o)).getAttribute("h"));
@@ -111,29 +150,21 @@ public class XML_Test{
 
                 //ROLE OBJECTS
                 if(attributeList.item(z).getNodeName() == "parts"){
-                  //jones = parts
+
                   Element jones = (Element)attributeList.item(z);
-                  //johnson =list of part nodes
+
                   NodeList johnson = jones.getChildNodes();
                   for(int w = 0; w< johnson.getLength(); w++){
                     if(johnson.item(w) instanceof Element){
-                      //System.out.println(johnson.item(w).getNodeName() + " " + ((Element)johnson.item(w)).getAttribute("name") + " level = " + ((Element)johnson.item(w)).getAttribute("level"));
                       roleName =  ((Element)johnson.item(w)).getAttribute("name") ;
                       roleLevel = Integer.parseInt(((Element)johnson.item(w)).getAttribute("level"));
-                      //jon = area
-                      // Element jon = (Element)johnson.item(w);
-                      // //steve = area or line
+
                       NodeList steve = ((Element)johnson.item(w)).getChildNodes();
 
-                      // Element area = (Element)steve.item(0);
-                      // Element line = (Element)steve.item(1);
                       for(int o = 0; o <steve.getLength(); o++){
                         if(steve.item(o) instanceof Element){
                           if(steve.item(o).getNodeName().equals("area")){
-                          // System.out.println(" area =" + " " + ((Element)steve.item(o)).getAttribute("x")
-                          //                  + " " + ((Element)steve.item(o)).getAttribute("y")
-                          //                  + " " + ((Element)steve.item(o)).getAttribute("h")
-                          //                  + " " + ((Element)steve.item(o)).getAttribute("w"));
+
                           roleArea[0] = Integer.parseInt(((Element)steve.item(o)).getAttribute("x"));
                           roleArea[1] = Integer.parseInt(((Element)steve.item(o)).getAttribute("y"));
                           roleArea[2] = Integer.parseInt(((Element)steve.item(o)).getAttribute("h"));
@@ -141,7 +172,6 @@ public class XML_Test{
 
                           }
                           else if(steve.item(o).getNodeName().equals("line")){
-                          //System.out.println(" line =" + ((Element)steve.item(o)).getTextContent());
                           //DESCRIPTION
                           description = ((Element)steve.item(o)).getTextContent();
                           }
@@ -149,14 +179,13 @@ public class XML_Test{
                       }
                       role = new Role(roleName, description, roleLevel, roleArea);
                       roleArray.add(role);
-                      //System.out.println(role.toString());
 
                     }
                   }
                 }
               }
             }
-            roomList.add(new SetRoom(roomName, roleArray.size(), roleArray, neighbors, shotMarkers));
+            roomList.add(new SetRoom(roomName, roleArray.size(), roleArray, neighbors, shotMarkers, area));
           }
         }
         return roomList;

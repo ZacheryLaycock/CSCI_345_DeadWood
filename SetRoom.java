@@ -14,10 +14,10 @@ class SetRoom extends Room{
 
 
   public SetRoom(String name, int amountOfRoles, ArrayList<Role> roleArray,
-                 LinkedList<String> neighbors,  HashMap<Integer, int[]> shotMarkers){
+                 LinkedList<String> neighbors,  HashMap<Integer, int[]> shotMarkers, int[] area){
 
 
-    super(name, neighbors);
+    super(name, neighbors, area);
     this.shotMarkers = shotMarkers;
     this.amountOfRoles = amountOfRoles;
     this.roleArray = roleArray;
