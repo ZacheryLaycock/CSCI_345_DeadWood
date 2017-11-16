@@ -87,12 +87,12 @@ class BoardManager{
           if (roomList.get(i).getName().equals(listOfPlayer.get(player).location)){
             room = roomList.get(i);
             if (room instanceof SetRoom){
-
-              if (!checkRehearsalLevel(listOfPlayer.get(player), room.getSC().getBudget())){
+              setRoom = (SetRoom) room;
+              if (!rehearsalManager.checkRehearsalLevel(listOfPlayer.get(player), setRoom.getSC().getBudget())){
                 System.out.println("You have rehearsed too many times already. Get ur shit together!!!");
               }
               else{
-                givePlayerRehearsalToken(listOfPlayer.get(player));
+                rehearsalManager.givePlayerRehearsalToken(listOfPlayer.get(player));
               }
             }
             else{
