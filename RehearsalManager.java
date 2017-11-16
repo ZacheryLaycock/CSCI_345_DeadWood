@@ -4,19 +4,17 @@
 class RehearsalManager{
 
   public RehearsalManager(){
-
   }
 
   //givePlayerRehearsalToken call this thing
-  public boolean checkRehearsalLevel(){
+  public boolean checkRehearsalLevel(Player player, int budget){
+    if (player.rehearsalBonuses < (budget - 1)){
+      return true;
+    }
     return false;
   }
 
-  // player call this
-  public int givePlayerRehearsalToken(){
-    return 0;
-    // return amount of bonuses + 1
-    // return 0 if checkRehearsalLevel false
+  public void givePlayerRehearsalToken(Player player) {
+    player.rehearsalBonuses = player.rehearsalBonuses + 1;
   }
-
 }

@@ -23,6 +23,7 @@ class SetRoom extends Room{
     this.roleArray = roleArray;
     this.flipped = false;
     this.done = false;
+    this.sceneCard = null;
     maxShotMarkers = shotMarkers.size();
   }
 
@@ -41,5 +42,9 @@ class SetRoom extends Room{
 
   public String toString(){
     return "Name :" + super.name;
+  }
+
+  public SceneCard getSC(){
+    return this.sceneCard;
   }
 }

@@ -10,6 +10,7 @@ class Player{
   public Player(int num){
     location = "TrailerRoom";
     money = 0;
+    rehearsalBonuses = 0;
     switch(num){
       // case 1 means 3 players
       case 1: rank = 1;
@@ -92,11 +93,8 @@ class Player{
     // rehearsalBonuses = RehearsalManager.givePlayerRehearsalToken(this);
   }
 
-  public void setLocation(LocationManager locationManager){
-    // location manager presents options
-    // choose an option
-    // if legal then move
-    this.location = locationManager.updatePlayerLocation(location);
+  public void setLocation(String newLocation){
+    this.location = newLocation;
   }
 
 }

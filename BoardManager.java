@@ -8,6 +8,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import java.util.Collections;
+import java.util.Scanner;
 
 
 class BoardManager{
@@ -39,6 +40,85 @@ class BoardManager{
         this.numberOfRemainingRoom =10;
 
         setUp();
+        play();
+    }
+
+    public void play(){
+    //main game loop
+      while (numberOfDays != 0){
+        //decrement days after all but 1 room complete
+        while(numberOfRemainingRoom != 1){
+          for (int currentPlayer = 0; currentPlayer < numberOfPlayers; currentPlayer++){
+            System.out.println("Player "+(currentPlayer+1)+"'s turn");
+            playerAction(currentPlayer);
+          }
+        }
+        numberOfDays--;
+        resetBoard();
+      }
+      endGame();
+    }
+
+    //takes player action and changes game state
+    public void playerAction(int player){
+      Scanner scanner = new Scanner(System.in);
+      System.out.println("What would you like to do?");
+      String[] input = scanner.nextLine().split(" ");
+      if (input[0].equalsIgnoreCase("who")){
+          System.out.println((player+1));
+      }else if (input[0].equalsIgnoreCase("where")){
+          System.out.println(listOfPlayer.get(player).location);
+      }else if (input[0].equalsIgnoreCase("move")){
+        Room room = null;
+        for (int i = 0; i < roomList.size(); i++){
+          if (roomList.get(i).getName().equals(listOfPlayer.get(player).location)){
+            room = roomList.get(i);
+          }
+        }
+        locationManager.updatePlayerLocation(listOfPlayer.get(player), input[1], room);
+      }else if (input[0].equalsIgnoreCase("work")){
+
+      }else if (input[0].equalsIgnoreCase("upgrade")){
+
+      }else if (input[0].equalsIgnoreCase("rehearse")){
+        Room room = null;
+        SetRoom setRoom = null;
+        for (int i = 0; i < roomList.size(); i++){
+          if (roomList.get(i).getName().equals(listOfPlayer.get(player).location)){
+            room = roomList.get(i);
+            if (room instanceof SetRoom){
+
+              if (!checkRehearsalLevel(listOfPlayer.get(player), room.getSC().getBudget())){
+                System.out.println("You have rehearsed too many times already. Get ur shit together!!!");
+              }
+              else{
+                givePlayerRehearsalToken(listOfPlayer.get(player));
+              }
+            }
+            else{
+              System.out.println("You are not allowed to rehearse in " + room.getName() + ".");
+              invalidInput(player);
+              break;
+            }
+          }
+        }
+
+
+
+      }else if (input[0].equalsIgnoreCase("act")){
+
+      }else if (input[0].equalsIgnoreCase("end")){
+
+      } else invalidInput(player);
+    }
+
+    public void invalidInput(int currentPlayer){
+      System.out.println("Invalid input, try again");
+      playerAction(currentPlayer);
+    }
+
+    public void resetBoard(){
+
     }
 
   public void setUp(){
@@ -95,14 +175,14 @@ class BoardManager{
 
   private LinkedList<Integer> determinePlayOrder(){
     LinkedList<Integer> playerOrder = new LinkedList<Integer>();
-    int max = roll(numberOfPlayers);
+    int currentPlayer = roll(numberOfPlayers);
 
     for(int i = 0; i< numberOfPlayers; i++){
-        if(max == -1){
-          max += numberOfPlayers;
+        if(currentPlayer == numberOfPlayers){
+          currentPlayer = 0;
         }
-        playerOrder.add(max);
-        max--;
+        playerOrder.add(currentPlayer);
+        currentPlayer++;
     }
 
     return playerOrder;
@@ -124,7 +204,7 @@ class BoardManager{
       return roll(numOfEqualRolls);
     }
 
-    return max;
+    return diceRoll.indexOf(max);
   }
 
 
@@ -140,12 +220,6 @@ class BoardManager{
   //   return null;
   // }
 
-
-  public void refreshGameBoard(){
-    // shuffle deck, assign cards to rooms
-    // return player to TrailerRoom
-    // reset shot markers
-  }
 
 
   public void endGame(){

@@ -1,44 +1,24 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Scanner;
 
 class LocationManager{
 
   LinkedList<String> neighbors;
-  Scanner scanner;
 
   public LocationManager(){
-    scanner = new Scanner(System.in);
   }
 
+  public boolean updatePlayerLocation(Player player, String newLocation, Room room){
+    String currentLocation = player.location;
 
-  // updatePlayerLocation call this
-  // public void  availableLocation(String currentLocation){
-  //   neighbors = BoardManager.findRoom(currentLocation).findAdjacentRooms();
-  //   System.out.println("neighbors of " + currentLocation + ": ");
-  //   for(int i = 0; i < neighbors.size(); i++){
-  //     System.out.println(i +". " +neighbors.get(i));
-  //   }
-  //   return;
-  // }
+    neighbors = room.findAdjacentRooms();
 
-  // player call this
-  public String updatePlayerLocation(String currentLocation){
-    int option = -1;
-
-    //availableLocation(currentLocation);
-
-    while(option<neighbors.size()){
-      System.out.print("move to: ");
-      option = scanner.nextInt();
+    if (neighbors.contains(newLocation)){
+      player.setLocation(newLocation);
+      return true;
     }
-
-    return neighbors.get(option);
-
-    // move if legal input
-    // if not call availableLocation
-
+    else{
+      return false;
+    }
   }
-
-
 }

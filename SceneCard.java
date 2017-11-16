@@ -14,6 +14,9 @@ class SceneCard{
     this.roleArray = roleArray;
   }
 
+  public int getBudget(){
+    return this.budget;
+  }
   // public flip(){
   //
   // }
