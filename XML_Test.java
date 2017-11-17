@@ -32,6 +32,8 @@ public class XML_Test{
       ArrayList<Role> roleArray = new ArrayList<Role>();
       Role role;
       HashMap<Integer, int[]> shotMarkers = new HashMap<Integer, int[]>();
+      HashMap<Integer, int[]> dollarMap = new HashMap<Integer, int[]>();
+      HashMap<Integer, int[]> fameMap = new HashMap<Integer, int[]>();
 
       DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -76,6 +78,67 @@ public class XML_Test{
         }
         roomList.add( new Room("Trailer", neighbors, area));
       }
+
+
+      NodeList office = doc.getElementsByTagName("Office");
+      for (int k = 0; k < trailerL.getLength(); k++){
+        //System.out.println(trailerL.getLength());
+        Node nNode = office.item(k);
+        if (nNode.getNodeType() == Node.ELEMENT_NODE){
+          Element eElement = (Element) nNode;
+          NodeList attributeList = eElement.getChildNodes();
+          for(int z = 0; z< attributeList.getLength(); z++){
+            if(attributeList.item(z) instanceof Element){
+              neighbors.clear();
+
+              if(attributeList.item(z).getNodeName() == "neighbors"){
+                Element jones = (Element)attributeList.item(z);
+                NodeList johnson = jones.getChildNodes();
+                for(int w = 0; w< johnson.getLength(); w++){
+                  if(johnson.item(w) instanceof Element){
+                    // ADD NEIGHBORS TO LINKED LIST
+                    neighbors.add(((Element)johnson.item(w)).getAttribute("name"));
+                    //System.out.println(((Element)johnson.item(w)).getAttribute("name"));
+                  }
+                }
+              }
+              if(attributeList.item(z).getNodeName().equals("area")){
+                area[0] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("x"));
+                area[1] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("y"));
+                area[2] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("h"));
+                area[3] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("w"));
+              //   System.out.println(((Element)attributeList.item(z)).getAttribute("x")+" "+((Element)attributeList.item(z)).getAttribute("y")
+              //   +" "+((Element)attributeList.item(z)).getAttribute("h")+" "+((Element)attributeList.item(z)).getAttribute("w"));
+              }
+              if(attributeList.item(z).getNodeName().equals("upgrades")){
+                int[] amtArea = new int[5];
+                Element upgrades = (Element)attributeList.item(z);
+                NodeList upgrade = upgrades.getChildNodes();
+                for(int w = 0; w< upgrade.getLength(); w++){
+                  if(upgrade.item(w) instanceof Element){
+                    Element cheese = (Element) upgrade.item(w).getFirstChild();
+                    amtArea[1] = Integer.parseInt(cheese.getAttribute("x"));
+                    amtArea[2] = Integer.parseInt(cheese.getAttribute("y"));
+                    amtArea[3] = Integer.parseInt(cheese.getAttribute("h"));
+                    amtArea[4] = Integer.parseInt(cheese.getAttribute("w"));
+                    if(((Element)upgrade.item(w)).getAttribute("currency").equals("dollar")){
+                      amtArea[0] = Integer.parseInt(((Element)upgrade.item(w)).getAttribute("amt"));
+                      dollarMap.put(Integer.parseInt(((Element)upgrade.item(w)).getAttribute("level")),amtArea);
+                    }
+                    if(((Element)upgrade.item(w)).getAttribute("currency").equals("credit")){
+                      amtArea[0] = Integer.parseInt(((Element)upgrade.item(w)).getAttribute("amt"));
+                      fameMap.put(Integer.parseInt(((Element)upgrade.item(w)).getAttribute("level")),amtArea);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        roomList.add(new CastingOfficeRoom("Office", neighbors, area, dollarMap, fameMap));
+      }
+
+
 
 
 
