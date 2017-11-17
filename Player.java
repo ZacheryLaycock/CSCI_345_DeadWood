@@ -4,11 +4,11 @@ class Player{
   int rank;
   int fame;
   int money;
-  String currentRole;
+  Role currentRole;
   int rehearsalBonuses;
-  String location;
+  // String location;
+  Room currentRoom;
   public Player(int num){
-    location = "TrailerRoom";
     money = 0;
     rehearsalBonuses = 0;
     switch(num){
@@ -81,7 +81,7 @@ class Player{
     this.money = money;
   }
 
-  public void changeRole(String role){
+  public void changeRole(Role role){
     // on the card or off the card
     // list the roles,
 
@@ -93,8 +93,13 @@ class Player{
     // rehearsalBonuses = RehearsalManager.givePlayerRehearsalToken(this);
   }
 
-  public void setLocation(String newLocation){
-    this.location = newLocation;
+  public void roleComplete(){
+    this.currentRole = null;
+    this.rehearsalBonuses = 0;
+  }
+
+  public void setLocation(Room newRoom){
+    this.currentRoom = newRoom;
   }
 
 }

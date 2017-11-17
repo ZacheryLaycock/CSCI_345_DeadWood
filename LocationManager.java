@@ -8,13 +8,13 @@ class LocationManager{
   public LocationManager(){
   }
 
-  public boolean updatePlayerLocation(Player player, String newLocation, Room room){
-    String currentLocation = player.location;
+  public boolean updatePlayerLocation(Player player, Room newRoom, Room currentRoom){
+    //String currentLocation = player.location;
 
-    neighbors = room.findAdjacentRooms();
+    neighbors = currentRoom.findAdjacentRooms();
 
-    if (neighbors.contains(newLocation)){
-      player.setLocation(newLocation);
+    if (neighbors.contains(newRoom.getName())){
+      player.setLocation(newRoom);
       return true;
     }
     else{

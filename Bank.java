@@ -12,23 +12,31 @@ class Bank{
   // on the job = 1;
   // off the job = 0;
   int job = 0;
-  private void setMoney(String player, int job){
-  //if on the job get some amount of money
-
-  //otherwise we know we are not on the job so divy out whatever is necessary to the player
+  public void setMoney(Player player, int amount){
+    player.setMoney(player.money+ amount);
 
   }
 
   // fame is only given when a successfull die roll is made
-  private void setFame(String player, int job){
-   // if on the job then give 2 fame
-
-   // if off the job then give 1 fame
+  public void setFame(Player player, int amount){
+   player.setFame(player.fame+ amount);
 
   }
 
-  public int computePlayerScore(Player player){
-    return player.money + player.fame + 5*player.rank;
+  public int computePlayerScore(ArrayList<Player> listOfPlayer){
+    int maxIndex = 0;
+    Player player;
+    int max = 0;
+    int current;
+    for (int i = 0; i < listOfPlayer.size(); i++){
+      player = listOfPlayer.get(i);
+      current = player.money + player.fame + 5*player.rank;
+      if(current > max){
+        current = max;
+        maxIndex = i;
+      }
+    }
+    return maxIndex;
   }
 
 }

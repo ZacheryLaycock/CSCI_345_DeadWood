@@ -6,29 +6,29 @@ class SetRoom extends Room{
   boolean flipped;
   SceneCard sceneCard;
   ArrayList<Role> roleArray = new ArrayList<Role>();
-  HashMap<Integer, int[]> shotMarkers = new HashMap<Integer, int[]>();
+  HashMap<Integer, int[]> shotMarkerData = new HashMap<Integer, int[]>();
   int amountOfRoles;
   boolean done;
-  int maxShotMarkers;
+  int shotMarkers;
 
 
 
   public SetRoom(String name, int amountOfRoles, ArrayList<Role> roleArray,
-                 LinkedList<String> neighbors,  HashMap<Integer, int[]> shotMarkers, int[] area){
+                 LinkedList<String> neighbors,  HashMap<Integer, int[]> shotMarkerData, int[] area){
 
 
     super(name, neighbors, area);
-    this.shotMarkers = shotMarkers;
+    this.shotMarkerData = shotMarkerData;
     this.amountOfRoles = amountOfRoles;
     this.roleArray = roleArray;
     this.flipped = false;
     this.done = false;
     this.sceneCard = null;
-    maxShotMarkers = shotMarkers.size();
+    shotMarkers = shotMarkerData.size();
   }
 
   public void removeShotMarkers(){
-    maxShotMarkers--;
+    shotMarkers--;
 
   }
 
@@ -37,7 +37,7 @@ class SetRoom extends Room{
   }
 
   public void resetShotMarkers(){
-    maxShotMarkers = shotMarkers.size();
+    shotMarkers = shotMarkerData.size();
   }
 
   public String toString(){
@@ -46,5 +46,10 @@ class SetRoom extends Room{
 
   public SceneCard getSC(){
     return this.sceneCard;
+  }
+
+  public void completeRoom(){
+    this.done = true;
+    this.sceneCard = null;
   }
 }
