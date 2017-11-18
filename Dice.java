@@ -1,5 +1,6 @@
 import java.util.*;
 import java.util.Random;
+import java.lang.Math;
 
 class Dice{
 
@@ -9,7 +10,7 @@ class Dice{
   }
 
   public int rollDice(){
-    int randomNum = rand.nextInt()%6 + 1;
+    int randomNum = Math.abs(rand.nextInt())%6 + 1;
     return randomNum;
   }
 

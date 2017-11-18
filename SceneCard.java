@@ -7,13 +7,19 @@ class SceneCard{
   String sceneDescription;
   String img;
   ArrayList<Role> roleArray;
+  ArrayList<Role> remainingRoles;
   int number;
 
   public SceneCard(String name, String img, int budget, int number, String sceneDescription, ArrayList<Role> roleArray){
     this.name = name;
     this.budget = budget;
     this.sceneDescription = sceneDescription;
-    this.roleArray = roleArray;
+    this.roleArray = new ArrayList<Role>();
+    this.remainingRoles = new ArrayList<Role>();
+    for(Role i:roleArray){
+      this.roleArray.add(i);
+      this.remainingRoles.add(i);
+    }
     this.img = img;
     this.number = number;
   }
@@ -21,12 +27,8 @@ class SceneCard{
   public int getBudget(){
     return this.budget;
   }
-  // public flip(){
-  //
-  // }
-  //
-  // public returnToDeck(){
-  //
-  // }
 
+  public String getName(){
+    return this.name;
+  }
 }

@@ -1,50 +1,41 @@
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Iterator;
+import java.util.Arrays;
 
 class CastingOfficeRoom extends Room{
-  HashMap<Integer, int[]> dollarMap = new HashMap<Integer, int[]>();
-  HashMap<Integer, int[]> fameMap = new HashMap<Integer, int[]>();
+  ArrayList<int[]> dollarMap = new ArrayList<int[]>();
+  ArrayList<int[]> fameMap = new ArrayList<int[]>();
 
-
-  public CastingOfficeRoom(String name, LinkedList<String> neighbors, int[] area,
-                           HashMap<Integer,int[]> dollarMap, HashMap<Integer,int[]> fameMap){
+  public CastingOfficeRoom(String name, ArrayList<String> neighbors, int[] area,
+                           ArrayList<int[]> dollarMap, ArrayList<int[]> fameMap){
     super(name,neighbors, area);
     this.dollarMap = dollarMap;
     this.fameMap = fameMap;
   }
 
-  // new rank if successful, or 0 if fail
-  // public int upgradeWithMoney(int rank, int money){
-  //   int cost = upgradeCost.get(rank).getMoney();
-  //   if(cost <= money){
-  //     return cost;
-  //   }
-  //   else{
-  //     System.out.println("insufficient fund");
-  //     return 0;
-  //   }
-  // }
-  //
-  // public int upgradeWithFame(int rank, int fame){
-  //   int cost = upgradeCost.get(rank).getFame();
-  //   if(cost <= fame){
-  //     return cost;
-  //   }
-  //   else{
-  //     System.out.println("insufficient fund");
-  //     return 0;
-  //   }
-  // }
-
-  public void listOptions(){
-    System.out.println("2 2 2");
-    System.out.println("3 3 3");
-    System.out.println("4 4 4");
-    System.out.println("5 5 5");
-    System.out.println("6 6 6");
-    return;
+  public void upgradeWithMoney(int rank, Player player){
+    int r = rank -2;
+    int cost = dollarMap.get(r)[0];
+    if(player.money >= cost){
+      player.setMoney(player.money - cost);
+      player.setRank(rank);
+    }
+    else{
+      System.out.println("insufficient $");
+    }
   }
 
+  public void upgradeWithFame(int rank, Player player){
+    int r = rank - 2;
+    int cost = fameMap.get(r)[0];
+    if(player.fame >= cost){
+      player.setFame(player.fame - cost);
+      player.setRank(rank);
+    }
+    else{
+      System.out.println("insufficient cr");
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
@@ -7,15 +7,16 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Arrays;
 
 public class XML_Test{
 
 
   public static void main(String[] args){
   boardXML("board.xml");
-  cardXML("card.xml");
+  cardXML("cards.xml");
   }
 
   public static ArrayList<Room> boardXML(String filename){
@@ -24,17 +25,12 @@ public class XML_Test{
       String roomName;
       String roleName;
       int roleLevel;
-      LinkedList<String> neighbors = new LinkedList<String>();
       int[] area = new int[4];
       int[] roleArea = new int[4];
       int[] shotMarkersArea = new int[4];
       String description ="";
       ArrayList<Role> roleArray = new ArrayList<Role>();
       Role role;
-      HashMap<Integer, int[]> shotMarkers = new HashMap<Integer, int[]>();
-      HashMap<Integer, int[]> dollarMap = new HashMap<Integer, int[]>();
-      HashMap<Integer, int[]> fameMap = new HashMap<Integer, int[]>();
-
       DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
       Document doc = dBuilder.parse(filename);
@@ -43,29 +39,24 @@ public class XML_Test{
 
       NodeList trailerL = doc.getElementsByTagName("trailer");
       for (int k = 0; k < trailerL.getLength(); k++){
-        //System.out.println(trailerL.getLength());
+        ArrayList<String> neighbors = new ArrayList<String>();
         Node nNode = trailerL.item(k);
         if (nNode.getNodeType() == Node.ELEMENT_NODE){
           Element eElement = (Element) nNode;
           NodeList attributeList = eElement.getChildNodes();
           for(int z = 0; z< attributeList.getLength(); z++){
             if(attributeList.item(z) instanceof Element){
-              neighbors.clear();
-
               if(attributeList.item(z).getNodeName() == "neighbors"){
                 Element jones = (Element)attributeList.item(z);
                 NodeList johnson = jones.getChildNodes();
                 for(int w = 0; w< johnson.getLength(); w++){
                   if(johnson.item(w) instanceof Element){
-                    // ADD NEIGHBORS TO LINKED LIST
+                    // ADD NEIGHBORS TO Array LIST
                     neighbors.add(((Element)johnson.item(w)).getAttribute("name"));
-                    //System.out.println(((Element)johnson.item(w)).getAttribute("name"));
                   }
                 }
               }
-
               if(attributeList.item(z).getNodeName().equals("area")){
-
                 area[0] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("x"));
                 area[1] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("y"));
                 area[2] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("h"));
@@ -80,8 +71,11 @@ public class XML_Test{
       }
 
 
-      NodeList office = doc.getElementsByTagName("Office");
-      for (int k = 0; k < trailerL.getLength(); k++){
+      NodeList office = doc.getElementsByTagName("office");
+      for (int k = 0; k < office.getLength(); k++){
+        ArrayList<int[]> dollarMap = new ArrayList<int[]>();
+        ArrayList<int[]> fameMap = new ArrayList<int[]>();
+        ArrayList<String> neighbors = new ArrayList<String>();
         //System.out.println(trailerL.getLength());
         Node nNode = office.item(k);
         if (nNode.getNodeType() == Node.ELEMENT_NODE){
@@ -89,14 +83,12 @@ public class XML_Test{
           NodeList attributeList = eElement.getChildNodes();
           for(int z = 0; z< attributeList.getLength(); z++){
             if(attributeList.item(z) instanceof Element){
-              neighbors.clear();
-
               if(attributeList.item(z).getNodeName() == "neighbors"){
                 Element jones = (Element)attributeList.item(z);
                 NodeList johnson = jones.getChildNodes();
                 for(int w = 0; w< johnson.getLength(); w++){
                   if(johnson.item(w) instanceof Element){
-                    // ADD NEIGHBORS TO LINKED LIST
+                    // ADD NEIGHBORS TO Array LIST
                     neighbors.add(((Element)johnson.item(w)).getAttribute("name"));
                     //System.out.println(((Element)johnson.item(w)).getAttribute("name"));
                   }
@@ -107,27 +99,38 @@ public class XML_Test{
                 area[1] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("y"));
                 area[2] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("h"));
                 area[3] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("w"));
-              //   System.out.println(((Element)attributeList.item(z)).getAttribute("x")+" "+((Element)attributeList.item(z)).getAttribute("y")
-              //   +" "+((Element)attributeList.item(z)).getAttribute("h")+" "+((Element)attributeList.item(z)).getAttribute("w"));
+                //  System.out.println(((Element)attributeList.item(z)).getAttribute("x")+" "+((Element)attributeList.item(z)).getAttribute("y")
+                //  +" "+((Element)attributeList.item(z)).getAttribute("h")+" "+((Element)attributeList.item(z)).getAttribute("w"));
               }
               if(attributeList.item(z).getNodeName().equals("upgrades")){
-                int[] amtArea = new int[5];
+                int[] amtArea = new int[6];
                 Element upgrades = (Element)attributeList.item(z);
                 NodeList upgrade = upgrades.getChildNodes();
                 for(int w = 0; w< upgrade.getLength(); w++){
                   if(upgrade.item(w) instanceof Element){
-                    Element cheese = (Element) upgrade.item(w).getFirstChild();
-                    amtArea[1] = Integer.parseInt(cheese.getAttribute("x"));
-                    amtArea[2] = Integer.parseInt(cheese.getAttribute("y"));
-                    amtArea[3] = Integer.parseInt(cheese.getAttribute("h"));
-                    amtArea[4] = Integer.parseInt(cheese.getAttribute("w"));
-                    if(((Element)upgrade.item(w)).getAttribute("currency").equals("dollar")){
-                      amtArea[0] = Integer.parseInt(((Element)upgrade.item(w)).getAttribute("amt"));
-                      dollarMap.put(Integer.parseInt(((Element)upgrade.item(w)).getAttribute("level")),amtArea);
+                    amtArea = new int[6];
+                    NodeList cheese = upgrade.item(w).getChildNodes();
+                    int level;
+                    int amt;
+                    String currency = "";
+                    for (int p = 0; p < cheese.getLength(); p++){
+                      if (cheese.item(p) instanceof Element){
+                        amtArea[2] = Integer.parseInt(((Element)cheese.item(p)).getAttribute("x"));
+                        amtArea[3] = Integer.parseInt(((Element)cheese.item(p)).getAttribute("y"));
+                        amtArea[4] = Integer.parseInt(((Element)cheese.item(p)).getAttribute("h"));
+                        amtArea[5] = Integer.parseInt(((Element)cheese.item(p)).getAttribute("w"));
+                      }
                     }
-                    if(((Element)upgrade.item(w)).getAttribute("currency").equals("credit")){
-                      amtArea[0] = Integer.parseInt(((Element)upgrade.item(w)).getAttribute("amt"));
-                      fameMap.put(Integer.parseInt(((Element)upgrade.item(w)).getAttribute("level")),amtArea);
+                    level = Integer.parseInt(((Element)upgrade.item(w)).getAttribute("level"));
+                    amtArea[1] = level;
+                    amt = Integer.parseInt(((Element)upgrade.item(w)).getAttribute("amt"));
+                    amtArea[0] = amt;
+                    currency = ((Element)upgrade.item(w)).getAttribute("currency");
+                    if(currency.equals("dollar")){
+                      dollarMap.add(amtArea);
+                    }
+                    if(currency.equals("credit")){
+                      fameMap.add(amtArea);
                     }
                   }
                 }
@@ -135,7 +138,8 @@ public class XML_Test{
             }
           }
         }
-        roomList.add(new CastingOfficeRoom("Office", neighbors, area, dollarMap, fameMap));
+        roomList.add(new CastingOfficeRoom("office", neighbors, area, dollarMap, fameMap));
+
       }
 
 
@@ -144,9 +148,11 @@ public class XML_Test{
 
 
 
-      NodeList nList = doc.getElementsByTagName("set");
 
+      NodeList nList = doc.getElementsByTagName("set");
       for (int i = 0; i < nList.getLength(); i++){
+        ArrayList<String> neighbors = new ArrayList<String>();
+        HashMap<Integer, int[]> shotMarkers = new HashMap<Integer, int[]>();
         Node nNode = nList.item(i);
         if (nNode.getNodeType() == Node.ELEMENT_NODE){
           Element eElement = (Element) nNode;
@@ -154,99 +160,89 @@ public class XML_Test{
           // ROOM NAME
           roomName = name;
           NodeList attributeList = eElement.getChildNodes();
-          //System.out.println(name);
-
-
-            for(int z = 0; z< attributeList.getLength(); z++){
-              if(attributeList.item(z) instanceof Element){
-                neighbors.clear();
-
-                if(attributeList.item(z).getNodeName() == "neighbors"){
-                  Element jones = (Element)attributeList.item(z);
-                  NodeList johnson = jones.getChildNodes();
-                  for(int w = 0; w< johnson.getLength(); w++){
-                    if(johnson.item(w) instanceof Element){
-                      // ADD NEIGHBORS TO LINKED LIST
-                      neighbors.add(((Element)johnson.item(w)).getAttribute("name"));
-                    }
+          for(int z = 0; z< attributeList.getLength(); z++){
+            if(attributeList.item(z) instanceof Element){
+              if(attributeList.item(z).getNodeName() == "neighbors"){
+                Element jones = (Element)attributeList.item(z);
+                NodeList johnson = jones.getChildNodes();
+                for(int w = 0; w< johnson.getLength(); w++){
+                  if(johnson.item(w) instanceof Element){
+                    // ADD NEIGHBORS TO Array LIST
+                    neighbors.add(((Element)johnson.item(w)).getAttribute("name"));
                   }
                 }
-
-                if(attributeList.item(z).getNodeName() == "area"){
-
-                  area[0] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("x"));
-                  area[1] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("y"));
-                  area[2] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("h"));
-                  area[3] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("w"));
-
-
-                }
-
-
-                if(attributeList.item(z).getNodeName() == "takes"){
-                  //SHOT MARKERS
-                  Element jones = (Element)attributeList.item(z);
-                  NodeList johnson = jones.getChildNodes();
-                  for(int w = 0; w< johnson.getLength(); w++){
-                    if(johnson.item(w) instanceof Element){
-                      // number of shot MARKERS
+              }
+              if(attributeList.item(z).getNodeName() == "area"){
+                area[0] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("x"));
+                area[1] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("y"));
+                area[2] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("h"));
+                area[3] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("w"));
+              }
+              if(attributeList.item(z).getNodeName() == "takes"){
+                //SHOT MARKERS
+                Element jones = (Element)attributeList.item(z);
+                NodeList johnson = jones.getChildNodes();
+                for(int w = 0; w< johnson.getLength(); w++){
+                  if(johnson.item(w) instanceof Element){
+                    // number of shot MARKERS
 
 
-                      Element jon = (Element)johnson.item(w);
-                      NodeList steve = jon.getChildNodes();
-                      for(int o = 0; o<steve.getLength(); o++){
-                        if(steve.item(o) instanceof Element){
+                    Element jon = (Element)johnson.item(w);
+                    NodeList steve = jon.getChildNodes();
+                    for(int o = 0; o<steve.getLength(); o++){
+                      if(steve.item(o) instanceof Element){
 
-                          shotMarkersArea[0] = Integer.parseInt(((Element)steve.item(o)).getAttribute("x"));
-                          shotMarkersArea[1] = Integer.parseInt(((Element)steve.item(o)).getAttribute("y"));
-                          shotMarkersArea[2] = Integer.parseInt(((Element)steve.item(o)).getAttribute("h"));
-                          shotMarkersArea[3] = Integer.parseInt(((Element)steve.item(o)).getAttribute("w"));
+                        shotMarkersArea[0] = Integer.parseInt(((Element)steve.item(o)).getAttribute("x"));
+                        shotMarkersArea[1] = Integer.parseInt(((Element)steve.item(o)).getAttribute("y"));
+                        shotMarkersArea[2] = Integer.parseInt(((Element)steve.item(o)).getAttribute("h"));
+                        shotMarkersArea[3] = Integer.parseInt(((Element)steve.item(o)).getAttribute("w"));
 
-                          shotMarkers.put(w, shotMarkersArea);
-                        }
+                        shotMarkers.put(w, shotMarkersArea);
                       }
                     }
                   }
                 }
+              }
 
-                //ROLE OBJECTS
-                if(attributeList.item(z).getNodeName() == "parts"){
+              //ROLE OBJECTS
+              if(attributeList.item(z).getNodeName() == "parts"){
 
-                  Element jones = (Element)attributeList.item(z);
+                Element jones = (Element)attributeList.item(z);
 
-                  NodeList johnson = jones.getChildNodes();
-                  for(int w = 0; w< johnson.getLength(); w++){
-                    if(johnson.item(w) instanceof Element){
-                      roleName =  ((Element)johnson.item(w)).getAttribute("name") ;
-                      roleLevel = Integer.parseInt(((Element)johnson.item(w)).getAttribute("level"));
+                NodeList johnson = jones.getChildNodes();
+                for(int w = 0; w< johnson.getLength(); w++){
+                  if(johnson.item(w) instanceof Element){
+                    roleName =  ((Element)johnson.item(w)).getAttribute("name") ;
+                    roleLevel = Integer.parseInt(((Element)johnson.item(w)).getAttribute("level"));
 
-                      NodeList steve = ((Element)johnson.item(w)).getChildNodes();
+                    NodeList steve = ((Element)johnson.item(w)).getChildNodes();
 
-                      for(int o = 0; o <steve.getLength(); o++){
-                        if(steve.item(o) instanceof Element){
-                          if(steve.item(o).getNodeName().equals("area")){
+                    for(int o = 0; o <steve.getLength(); o++){
+                      if(steve.item(o) instanceof Element){
+                        if(steve.item(o).getNodeName().equals("area")){
 
-                          roleArea[0] = Integer.parseInt(((Element)steve.item(o)).getAttribute("x"));
-                          roleArea[1] = Integer.parseInt(((Element)steve.item(o)).getAttribute("y"));
-                          roleArea[2] = Integer.parseInt(((Element)steve.item(o)).getAttribute("h"));
-                          roleArea[3] = Integer.parseInt(((Element)steve.item(o)).getAttribute("w"));
+                        roleArea[0] = Integer.parseInt(((Element)steve.item(o)).getAttribute("x"));
+                        roleArea[1] = Integer.parseInt(((Element)steve.item(o)).getAttribute("y"));
+                        roleArea[2] = Integer.parseInt(((Element)steve.item(o)).getAttribute("h"));
+                        roleArea[3] = Integer.parseInt(((Element)steve.item(o)).getAttribute("w"));
 
-                          }
-                          else if(steve.item(o).getNodeName().equals("line")){
-                          //DESCRIPTION
-                          description = ((Element)steve.item(o)).getTextContent();
-                          }
+                        }
+                        else if(steve.item(o).getNodeName().equals("line")){
+                        //DESCRIPTION
+                        description = ((Element)steve.item(o)).getTextContent();
                         }
                       }
-                      role = new Role(roleName, description, roleLevel, roleArea, false);
-                      roleArray.add(role);
-
+                    }
+                    role = new Role(roleName, description, roleLevel, roleArea, false);
+                    roleArray.add(role);
                     }
                   }
                 }
               }
             }
             roomList.add(new SetRoom(roomName, roleArray.size(), roleArray, neighbors, shotMarkers, area));
+
+            roleArray.clear();
           }
         }
         return roomList;
@@ -271,7 +267,7 @@ public class XML_Test{
       int roleLevel;
       int[] roleArea = new int[4];
       ArrayList<Role> roleArray = new ArrayList<Role>();
-      Role role;
+      //Role role;
       // use Builder to create an object to parse
       DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -296,36 +292,35 @@ public class XML_Test{
                   description = scene.getTextContent();
                 }
                 // get all the roles for on the card
-                if(attributeList.item(z).getNodeName() == "parts"){
-                  Element jones = (Element)attributeList.item(z);
-                  NodeList johnson = jones.getChildNodes();
-                  for(int w = 0; w< johnson.getLength(); w++){
-                    if(johnson.item(w) instanceof Element){
-                      roleName =  ((Element)johnson.item(w)).getAttribute("name") ;
-                      roleLevel = Integer.parseInt(((Element)johnson.item(w)).getAttribute("level"));
-                      NodeList steve = ((Element)johnson.item(w)).getChildNodes();
-                      for(int o = 0; o <steve.getLength(); o++){
-                        if(steve.item(o) instanceof Element){
-                          if(steve.item(o).getNodeName().equals("area")){
-                          roleArea[0] = Integer.parseInt(((Element)steve.item(o)).getAttribute("x"));
-                          roleArea[1] = Integer.parseInt(((Element)steve.item(o)).getAttribute("y"));
-                          roleArea[2] = Integer.parseInt(((Element)steve.item(o)).getAttribute("h"));
-                          roleArea[3] = Integer.parseInt(((Element)steve.item(o)).getAttribute("w"));
-                          }
-                          else if(steve.item(o).getNodeName().equals("line")){
-                          //DESCRIPTION of role
-                          description = ((Element)steve.item(o)).getTextContent();
-                          }
-                        }
+                if(attributeList.item(z).getNodeName() == "part"){
+                  //System.out.println("made it");
+                  Element part = (Element)attributeList.item(z);
+                  roleName =  part.getAttribute("name");
+                  roleLevel = Integer.parseInt(part.getAttribute("level"));
+                  //Element jones = (Element)attributeList.item(z);
+                  NodeList subNodes = part.getChildNodes();
+                  for(int w = 0; w< subNodes.getLength(); w++){
+                    if(subNodes.item(w) instanceof Element){
+                      Element thing = (Element)subNodes.item(w);
+                      if (thing.getNodeName().equals("area")){
+                        roleArea[0] = Integer.parseInt(thing.getAttribute("x"));
+                        roleArea[1] = Integer.parseInt(thing.getAttribute("y"));
+                        roleArea[2] = Integer.parseInt(thing.getAttribute("h"));
+                        roleArea[3] = Integer.parseInt(thing.getAttribute("w"));
                       }
-                      role = new Role(roleName, description, roleLevel, roleArea, true);
-                      roleArray.add(role);
+                      else if(thing.getNodeName().equals("line")){
+                        //DESCRIPTION of role
+                        description = thing.getTextContent();
+                      }
                     }
                   }
+                  Role role = new Role(roleName, description, roleLevel, roleArea, true);
+                  roleArray.add(role);
                 }
               }
             }
             sceneList.add(new SceneCard(name, img, budget, number, description, roleArray));
+            roleArray.clear();
           }
         }
         return sceneList;

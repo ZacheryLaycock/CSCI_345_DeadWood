@@ -3,22 +3,16 @@ import java.util.LinkedList;
 
 class LocationManager{
 
-  LinkedList<String> neighbors;
+  ArrayList<String> neighbors;
 
   public LocationManager(){
+    this.neighbors = null;
   }
 
   public boolean updatePlayerLocation(Player player, Room newRoom, Room currentRoom){
-    //String currentLocation = player.location;
-
-    neighbors = currentRoom.findAdjacentRooms();
-
-    if (neighbors.contains(newRoom.getName())){
+    if (currentRoom.findAdjacentRooms().contains(newRoom.getName()) && player.currentRole == null){
       player.setLocation(newRoom);
       return true;
-    }
-    else{
-      return false;
-    }
+    } else return false;
   }
 }

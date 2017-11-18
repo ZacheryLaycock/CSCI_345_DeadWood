@@ -1,11 +1,12 @@
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 class SetRoom extends Room{
   boolean flipped;
   SceneCard sceneCard;
   ArrayList<Role> roleArray = new ArrayList<Role>();
+  ArrayList<Role> remainingRoles;
   HashMap<Integer, int[]> shotMarkerData = new HashMap<Integer, int[]>();
   int amountOfRoles;
   boolean done;
@@ -14,17 +15,22 @@ class SetRoom extends Room{
 
 
   public SetRoom(String name, int amountOfRoles, ArrayList<Role> roleArray,
-                 LinkedList<String> neighbors,  HashMap<Integer, int[]> shotMarkerData, int[] area){
+                 ArrayList<String> neighbors,  HashMap<Integer, int[]> shotMarkerData, int[] area){
 
 
     super(name, neighbors, area);
     this.shotMarkerData = shotMarkerData;
     this.amountOfRoles = amountOfRoles;
-    this.roleArray = roleArray;
+    this.roleArray = new ArrayList<Role>();
+    this.remainingRoles = new ArrayList<Role>();
+    for(Role i:roleArray){
+      this.roleArray.add(i);
+      this.remainingRoles.add(i);
+    }
     this.flipped = false;
     this.done = false;
     this.sceneCard = null;
-    shotMarkers = shotMarkerData.size();
+    this.shotMarkers = shotMarkerData.size();
   }
 
   public void removeShotMarkers(){

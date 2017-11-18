@@ -1,13 +1,13 @@
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 // BEST IF THIS IS AN INTERFACE
 class Room{
 
-  LinkedList<String> adjacentRooms;
+  ArrayList<String> adjacentRooms;
   int[] area = new int[4];
   String name;
 
-  public Room(String name, LinkedList<String> adjacentRooms, int[] area ){
+  public Room(String name, ArrayList<String> adjacentRooms, int[] area ){
     this.area = area;
     this.name = name;
     this.adjacentRooms = adjacentRooms;
@@ -17,8 +17,8 @@ class Room{
     return this.name;
   }
 
-  public LinkedList<String> findAdjacentRooms(){
-    return adjacentRooms;
+  public ArrayList<String> findAdjacentRooms(){
+    return this.adjacentRooms;
 }
 
   public String toString(){

@@ -17,11 +17,15 @@ class Role{
   }
 
   public String toString(){
-    return name + " N " + description + " D " + rank + " R ";
+    return name + " Name " + description + " Description " + rank + " Rank ";
   }
 
   public String getName(){
     return name;
+  }
+
+  public int getRank(){
+    return rank;
   }
 
   // public checkPlayerRank(){

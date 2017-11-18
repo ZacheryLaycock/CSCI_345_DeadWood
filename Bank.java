@@ -19,8 +19,7 @@ class Bank{
 
   // fame is only given when a successfull die roll is made
   public void setFame(Player player, int amount){
-   player.setFame(player.fame+ amount);
-
+    player.setFame(player.fame + amount);
   }
 
   public int computePlayerScore(ArrayList<Player> listOfPlayer){

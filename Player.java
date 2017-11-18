@@ -13,16 +13,16 @@ class Player{
     rehearsalBonuses = 0;
     switch(num){
       // case 1 means 3 players
-      case 1: rank = 1;
+      case 0: rank = 1;
               fame = 0;
               break;
-      case 2: rank = 1;
+      case 1: rank = 1;
               fame = 2;
               break;
-      case 3: rank = 1;
+      case 2: rank = 1;
               fame = 4;
               break;
-      case 4: rank = 2;
+      case 3: rank = 2;
               fame = 0;
               break;
       default:rank = 0;
@@ -32,45 +32,10 @@ class Player{
 
   }
 
-  public void setRank(CastingOfficeRoom castingOffice){
-    // call casting office pass rank and money in
-    Scanner scanner = new Scanner(System.in);
-    int option;
-    int rank;
-    int cost = 0;
+  public void setRank(int rank){
 
-    castingOffice.listOptions();
+    this.rank = rank;
 
-    System.out.println("which rank would you like?");
-    rank = scanner.nextInt();
-    System.out.println("how do you want to upgrade? money(0) or fame(1)?");
-    option = scanner.nextInt();
-
-    while(option != 1 || option != 0){
-      if (option == 1){
-        cost = castingOffice.upgradeWithFame(rank, fame);
-      }
-      else if (option == 0){
-        cost = castingOffice.upgradeWithMoney(rank, money);
-      }
-    }
-
-    if(cost != 0){
-      if(option == 1){
-        fame-= cost;
-      }
-      else if(option == 0){
-        money-=cost;
-      }
-    }
-
-    while(cost == 0){
-      System.out.println("do still want to upgrade? no(0) yes(1)");
-      option = scanner.nextInt();
-      if(option == 0) break;
-      setRank(castingOffice);
-    }
-    return;
   }
 
   public void setFame(int fame){
@@ -100,6 +65,26 @@ class Player{
 
   public void setLocation(Room newRoom){
     this.currentRoom = newRoom;
+  }
+
+  public int getMoney(){
+    return this.money;
+  }
+
+  public int getFame(){
+    return this.fame;
+  }
+
+  public int getRank(){
+    return this.rank;
+  }
+
+  public Role getRole(){
+    return this.currentRole;
+  }
+
+  public int getRehearsalBonuses(){
+    return rehearsalBonuses;
   }
 
 }
