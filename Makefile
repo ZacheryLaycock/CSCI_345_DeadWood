@@ -7,6 +7,7 @@ JC = javac
 
 CLASSES = \
 		Bank.java \
+		BoardLayersListener.java \
 		BoardManager.java \
 		CastingOfficeRoom.java \
 		DeadWood.java \
@@ -24,13 +25,12 @@ CLASSES = \
 
 
 
-default: 
+default:
 	javac $(CLASSES)
 
 
-clean: 
+clean:
 	$(RM) $(wildcard *.class)
 
-add: 
-	git add $(CLASSES) Makefile
-
+add:
+	git add $(CLASSES) Makefile 
