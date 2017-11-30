@@ -16,7 +16,7 @@ import java.lang.Math;
 
 class BoardManager{
 
-
+  BoardLayersListener board;
   // game objects
   Random random = new Random();
   ArrayList<Player> listOfPlayer = new ArrayList<Player>();
@@ -25,13 +25,14 @@ class BoardManager{
   Dice dice;
   LocationManager locationManager;
   RehearsalManager rehearsalManager;
-
+  String buffer = "";
   ArrayList<Room> roomList = new ArrayList<Room>();
   ArrayList<SceneCard> cardList = new ArrayList<SceneCard>();
   CastingOfficeRoom castingOffice;
   int numberOfDays;
   int numberOfPlayers;
   int numberOfRemainingRoom;
+
 
   public BoardManager(int numberOfPlayers){
 
@@ -85,9 +86,15 @@ class BoardManager{
     Player currentPlayer = listOfPlayer.get(player);
     Scanner scanner = new Scanner(System.in);
     System.out.print("What would you like to do? \n$$$$$");
-    String[] input = scanner.nextLine().split(" ");
+    resetBuffer();
 
 
+    while(buffer.equals("")){
+      getInput();
+    }
+
+
+    String[] input = this.buffer.split(" ");
     if (input[0].equalsIgnoreCase("who")){
       System.out.println((player+1));
     }
@@ -137,7 +144,11 @@ class BoardManager{
       //player can choose to work after moving
 
       System.out.println("Choose to work or end");
-      String[] input2 = scanner.nextLine().split(" ");
+      resetBuffer();
+      while(buffer.equals("")){
+        getInput();
+      }
+      String[] input2 = buffer.split(" ");
       //System.out.println(input2[0]);
       //System.out.println(input2.length);
       String arole = "";
@@ -151,6 +162,8 @@ class BoardManager{
         }
       }
       if (input2[0].equalsIgnoreCase("work") ){
+
+
         work(currentPlayer, arole);
       }else if (input2[0].equalsIgnoreCase("end")){
         //do nothing
@@ -216,8 +229,19 @@ class BoardManager{
     }else if (input[0].equalsIgnoreCase("end")){
       //Nothing happens
     } else invalidInput(player);
+    resetBuffer();
   }
 
+
+  public void getInput(){
+    Scanner scanner = new Scanner(System.in);
+    this.buffer = board.current;
+  }
+
+  public void resetBuffer(){
+    buffer = "";
+    board.current = "";
+  }
 
   public void invalidInput(int currentPlayer){
     System.out.println("Invalid input, try again");
@@ -363,7 +387,8 @@ class BoardManager{
     roomList = XML_Test.boardXML("board.xml");
 
     resetBoard();
-
+    board = new BoardLayersListener();
+    board.setVisible(true);
 
   }
 

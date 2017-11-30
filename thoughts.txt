@@ -1,0 +1,9 @@
+thoughts
+
+
+
+1. Communication between BoardLayersListener and BoardManager
+
+2. Populate Board with our stuff
+
+3. try catch everything at the end

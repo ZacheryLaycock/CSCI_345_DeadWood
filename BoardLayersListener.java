@@ -30,7 +30,9 @@ public class BoardLayersListener extends JFrame {
   JButton bRehearse;
   JButton bMove;
   JButton bStart;
+  JButton bWork;
 
+  String current = "";
   // JLayered Pane
   JLayeredPane bPane;
 
@@ -105,12 +107,18 @@ public class BoardLayersListener extends JFrame {
        bStart.setBounds(icon.getIconWidth()+10,120,100, 20);
        bStart.addMouseListener(new boardMouseListener());
 
+       bWork = new JButton("WORK");
+       bWork.setBackground(Color.white);
+       bWork.setBounds(icon.getIconWidth()+10,150,100, 20);
+       bWork.addMouseListener(new boardMouseListener());
+
 
        // Place the action buttons in the top layer
        bPane.add(bAct, new Integer(2));
        bPane.add(bRehearse, new Integer(2));
        bPane.add(bMove, new Integer(2));
        bPane.add(bStart, new Integer(2));
+       bPane.add(bWork, new Integer(2));
 ;
 
   }
@@ -118,18 +126,22 @@ public class BoardLayersListener extends JFrame {
   // This class implements Mouse Events
 
   class boardMouseListener implements MouseListener{
-
       // Code for the different button clicks
       public void mouseClicked(MouseEvent e) {
 
          if (e.getSource()== bAct){
-            //return "act Reluctant Farmer";
+            current = "work Reluctant Farmer";
+         }
+         else if (e.getSource()== bWork){
+            current = "work Reluctant Farmer";
          }
          else if (e.getSource()== bRehearse){
-            //return "rehearse";
+            current = "rehearse";
          }
          else if (e.getSource()== bMove){
-            System.out.println(e.getSource() + "adsfsdfsdf");
+
+            current = "move Saloon";
+
             //return "move Saloon";
 
          }
