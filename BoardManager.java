@@ -88,7 +88,7 @@ class BoardManager{
     System.out.print("What would you like to do? \n$$$$$");
     resetBuffer();
 
-
+    //buffer stores commands from gameboard
     while(buffer.equals("")){
       getInput();
     }
@@ -120,17 +120,25 @@ class BoardManager{
       playerAction(player);
 
     }else if (input[0].equalsIgnoreCase("move")){
+      //get player input here
+      resetBuffer();
+      ArrayList<String> adjacencyList = currentPlayer.currentRoom.findAdjacentRooms();
+      arrayAdj = adjacencyList.toArray(new String[adjacencyList.size()]);
+      String roomName = board.moveHelper(arrayAdj);
       Room newRoom = null;
+
+      //construct roomName String
+      /* this code is from text implementation, keeping for debugging purposes
       String roomName = "";
       for (int i = 1; i < input.length; i++){
         if (i < input.length - 1){
           roomName += input[i] + " ";
-          //System.out.println(input[i]);
         }
         else{
           roomName += input[i];
         }
       }
+      */
       for (int i = 0; i < roomList.size(); i++){
         if (roomList.get(i).getName().equalsIgnoreCase(roomName)){
           newRoom = roomList.get(i);
