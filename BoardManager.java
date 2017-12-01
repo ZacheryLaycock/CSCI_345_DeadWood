@@ -120,10 +120,11 @@ class BoardManager{
     //buffer stores commands from gameboard
     while(buffer.equals("")){
       getInput();
+      System.out.print("");
     }
 
-
     String[] input = this.buffer.split(" ");
+
     if (input[0].equalsIgnoreCase("who")){
       System.out.println((player+1));
     }
@@ -149,6 +150,7 @@ class BoardManager{
       playerAction(player);
 
     }else if (input[0].equalsIgnoreCase("move")){
+      System.out.println("here");
       //get player input here
       resetBuffer();
       ArrayList<String> adjacencyList = currentPlayer.currentRoom.findAdjacentRooms();
@@ -184,12 +186,13 @@ class BoardManager{
       System.out.println("Choose to work or end");
       resetBuffer();
       while(buffer.equals("")){
+        System.out.print("");
         getInput();
       }
       String[] input2 = buffer.split(" ");
       //System.out.println(input2[0]);
       //System.out.println(input2.length);
-      String arole = "";
+      /*String arole = "";
       for (int i = 1; i < input2.length; i++){
         if (i < input2.length - 1){
           arole += input2[i] + " ";
@@ -198,43 +201,40 @@ class BoardManager{
         else{
           arole += input2[i];
         }
-      }
+      }*/
       if (input2[0].equalsIgnoreCase("work") ){
-
-
+        resetBuffer();
+        String[] roles = workBox(currentPlayer);
+        board.moveHelper(roles);
+        while(buffer.equals("")){
+          getInput();
+          System.out.print("");
+        }
+        String arole = this.buffer;
         work(currentPlayer, arole);
       }else if (input2[0].equalsIgnoreCase("end")){
         //do nothing
       }
 
     }else if (input[0].equalsIgnoreCase("work")){
-      if(currentPlayer.currentRoom instanceof SetRoom){
 
-      }
-
-      if (currentPlayer.currentRole == null){
-        String role = "";
-        for (int i = 1; i < input.length; i++){
-          if (i < input.length - 1){
-            role += input[i] + " ";
-          }
-          else{
-            role += input[i];
-          }
-        }
         if (currentPlayer.currentRoom instanceof SetRoom){
-          work(currentPlayer, role);
+          resetBuffer();
+          String[] roles = workBox(currentPlayer);
+          board.moveHelper(roles);
+          while(buffer.equals("")){
+            System.out.print("");
+            getInput();
+          }
+          String arole = this.buffer;
+          work(currentPlayer, arole);
         } else{
           System.out.println("You need to be on set to work");
           invalidInput(player);
         }
-      }
-      else{
-        System.out.println("You are already working a role!!!!!");
-        invalidInput(player);
-      }
+    }
 
-    }else if (input[0].equalsIgnoreCase("upgrade")){
+    else if (input[0].equalsIgnoreCase("upgrade")){
       if (currentPlayer.currentRoom.getName().equals("office")){
         if (input[1].equals("$")){
           castingOffice.upgradeWithMoney(Integer.parseInt(input[2]), currentPlayer);
@@ -274,9 +274,19 @@ class BoardManager{
 
   }
 
+  public String[] workBox(Player currentPlayer){
+    SetRoom currentRoom = (SetRoom) currentPlayer.currentRoom;
+    ArrayList<String> roles = new ArrayList<String>();
+    for(Role i : currentRoom.remainingRoles){
+      roles.add("(off card) " +(i.getName()));
+    }
+    for(Role i : currentRoom.getSC().remainingRoles){
+      roles.add("(on card) " +(i.getName()));
+    }
+    return roles.toArray(new String[roles.size()]);
+  }
 
   public void getInput(){
-    Scanner scanner = new Scanner(System.in);
     this.buffer = board.current;
   }
 

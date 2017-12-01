@@ -237,7 +237,7 @@ public class BoardLayersListener extends JFrame {
             current = "act";
          }
          else if (e.getSource()== bWork){
-            current = "work Reluctant Farmer";
+            current = "work";
          }
          else if (e.getSource()== bRehearse){
             current = "rehearse";
