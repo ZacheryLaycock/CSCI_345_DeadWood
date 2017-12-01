@@ -33,4 +33,7 @@ clean:
 	$(RM) $(wildcard *.class)
 
 add:
-	git add $(CLASSES) Makefile 
+	git add $(CLASSES) Makefile
+
+run:
+	java DeadWood

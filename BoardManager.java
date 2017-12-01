@@ -81,13 +81,42 @@ class BoardManager{
     endGame();
   }
 
+  private void disableButton(Player currentPlayer){
+    if(!(currentPlayer.currentRoom instanceof SetRoom)){
+      if(currentPlayer.currentRoom.getName().equals("trailer")){
+        board.greyOut("upgrade");
+        System.out.println("b");
+
+      }
+      System.out.println("a");
+      board.greyOut("work");
+      board.greyOut("act");
+      board.greyOut("rehearse");
+    }
+    else if(currentPlayer.currentRoom instanceof SetRoom){
+      if(currentPlayer.currentRole == null){
+        System.out.println("c");
+        board.greyOut("act");
+        board.greyOut("rehearse");
+        board.greyOut("upgrade");
+      }
+      else{
+        System.out.println("d");
+        board.greyOut("move");
+        board.greyOut("work");
+        board.greyOut("upgrade");
+      }
+    }
+  }
+
   //takes player action and changes game state
   public void playerAction(int player){
+    board.whiteAgain();
     Player currentPlayer = listOfPlayer.get(player);
     Scanner scanner = new Scanner(System.in);
     System.out.print("What would you like to do? \n$$$$$");
     resetBuffer();
-
+    disableButton(currentPlayer);
     //buffer stores commands from gameboard
     while(buffer.equals("")){
       getInput();
@@ -123,8 +152,8 @@ class BoardManager{
       //get player input here
       resetBuffer();
       ArrayList<String> adjacencyList = currentPlayer.currentRoom.findAdjacentRooms();
-      arrayAdj = adjacencyList.toArray(new String[adjacencyList.size()]);
-      String roomName = board.moveHelper(arrayAdj);
+      String[] arrayAdj = adjacencyList.toArray(new String[adjacencyList.size()]);
+      String roomName = arrayAdj[board.moveHelper(arrayAdj)];
       Room newRoom = null;
 
       //construct roomName String
@@ -150,7 +179,8 @@ class BoardManager{
         invalidInput(player);
       }
       //player can choose to work after moving
-
+      board.whiteAgain();
+      disableButton(currentPlayer);
       System.out.println("Choose to work or end");
       resetBuffer();
       while(buffer.equals("")){
@@ -178,6 +208,10 @@ class BoardManager{
       }
 
     }else if (input[0].equalsIgnoreCase("work")){
+      if(currentPlayer.currentRoom instanceof SetRoom){
+
+      }
+
       if (currentPlayer.currentRole == null){
         String role = "";
         for (int i = 1; i < input.length; i++){
@@ -235,9 +269,9 @@ class BoardManager{
 
 
     }else if (input[0].equalsIgnoreCase("end")){
-      //Nothing happens
     } else invalidInput(player);
     resetBuffer();
+
   }
 
 
@@ -337,7 +371,7 @@ class BoardManager{
 
     for (int i = 0; i < roomList.size(); i++){
       //System.out.println(roomList.get(i).toString());
-      if (roomList.get(i).getName().equals("Trailer")){
+      if (roomList.get(i).getName().equals("trailer")){
         for (int y = 0; y < listOfPlayer.size(); y++){
           listOfPlayer.get(y).setLocation(roomList.get(i));
         }

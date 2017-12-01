@@ -67,7 +67,7 @@ public class XML_Test{
             }
           }
         }
-        roomList.add( new Room("Trailer", neighbors, area));
+        roomList.add( new Room("trailer", neighbors, area));
       }
 
 
