@@ -92,8 +92,14 @@ class BoardManager{
       board.greyOut("work");
       board.greyOut("act");
       board.greyOut("rehearse");
+
     }
     else if(currentPlayer.currentRoom instanceof SetRoom){
+      SetRoom tempRoom = (SetRoom)currentPlayer.currentRoom;
+      if (tempRoom.done == true){
+        System.out.println("sadlk;fhasdkfhsakdlfhasdlkfjhh");
+        board.greyOut("work");
+      }
       if(currentPlayer.currentRole == null){
         System.out.println("c");
         board.greyOut("act");
@@ -122,6 +128,7 @@ class BoardManager{
       getInput();
       System.out.print("");
     }
+
 
     String[] input = this.buffer.split(" ");
 
@@ -203,14 +210,22 @@ class BoardManager{
         }
       }*/
       if (input2[0].equalsIgnoreCase("work") ){
-        resetBuffer();
+        board.greyOut("work");
         String[] roles = workBox(currentPlayer);
-        board.moveHelper(roles);
-        while(buffer.equals("")){
-          getInput();
-          System.out.print("");
+        int index = board.moveHelper(roles);
+        String role = roles[index];
+        String[] temp = role.split(" ");
+        String arole = "";
+        int y = 0;
+        for (int i = 2; i < temp.length; i++){
+          if (i < temp.length -1){
+            arole += (temp[i] + " ");
+          }
+          else{
+            arole += temp[i];
+          }
         }
-        String arole = this.buffer;
+        System.out.println(arole);
         work(currentPlayer, arole);
       }else if (input2[0].equalsIgnoreCase("end")){
         //do nothing
@@ -219,14 +234,22 @@ class BoardManager{
     }else if (input[0].equalsIgnoreCase("work")){
 
         if (currentPlayer.currentRoom instanceof SetRoom){
-          resetBuffer();
+          board.greyOut("work");
           String[] roles = workBox(currentPlayer);
-          board.moveHelper(roles);
-          while(buffer.equals("")){
-            System.out.print("");
-            getInput();
+          int index = board.moveHelper(roles);
+          String role = roles[index];
+          String[] temp = role.split(" ");
+          String arole = "";
+          int y = 0;
+          for (int i = 2; i < temp.length; i++){
+            if (i < temp.length -1){
+              arole += (temp[i] + " ");
+            }
+            else{
+              arole += temp[i];
+            }
           }
-          String arole = this.buffer;
+          System.out.println(arole);
           work(currentPlayer, arole);
         } else{
           System.out.println("You need to be on set to work");
@@ -310,7 +333,7 @@ class BoardManager{
     int index1 = 0;
     int index2 = 0;
     for(Role i : currentRoom.remainingRoles){
-      System.out.println("on room"+i.getName());
+      //System.out.println("on room"+i.getName());
       if (i.getName().equalsIgnoreCase(role)){
         if(i.getRank() <= player.getRank()){
           newRole = i;
@@ -326,7 +349,7 @@ class BoardManager{
     }
 
     for(Role i : currentRoom.getSC().remainingRoles){
-      System.out.println("on card"+i.getName());
+      //System.out.println("on card"+i.getName());
       if (i.getName().equalsIgnoreCase(role)){
         if(i.getRank() <= player.getRank()){
           newRole = i;

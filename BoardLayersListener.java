@@ -116,11 +116,11 @@ public class BoardLayersListener extends JFrame {
        bMoveListener = new boardMouseListener();
        bMove.addMouseListener(bMoveListener);
 
-       bStart = new JButton("START");
-       bStart.setBackground(Color.white);
-       bStart.setBounds(icon.getIconWidth()+10,120,100, 20);
-       bStartListener = new boardMouseListener();
-       bStart.addMouseListener(bStartListener);
+      //  bStart = new JButton("START");
+      //  bStart.setBackground(Color.white);
+      //  bStart.setBounds(icon.getIconWidth()+10,120,100, 20);
+      //  bStartListener = new boardMouseListener();
+      //  bStart.addMouseListener(bStartListener);
 
        bWork = new JButton("WORK");
        bWork.setBackground(Color.white);
@@ -150,13 +150,13 @@ public class BoardLayersListener extends JFrame {
        bPane.add(bAct, new Integer(2));
        bPane.add(bRehearse, new Integer(2));
        bPane.add(bMove, new Integer(2));
-       bPane.add(bStart, new Integer(2));
+       //bPane.add(bStart, new Integer(2));
        bPane.add(bWork, new Integer(2));
        bPane.add(bEnd, new Integer(2));
        bPane.add(selectButton, new Integer(2));
        bPane.add(bUpgrade ,new Integer(2));
        selectButton.setVisible(false);
-;
+
 
   }
 
@@ -185,19 +185,19 @@ public class BoardLayersListener extends JFrame {
 
 
     public void whiteAgain(){
-      System.out.println("in white again");
+      //System.out.println("in white again");
 
       bAct.setBackground(Color.white);
       bRehearse.setBackground(Color.white);
       bMove.setBackground(Color.white);
-      bStart.setBackground(Color.white);
+      // bStart.setBackground(Color.white);
       bWork.setBackground(Color.white);
       bEnd.setBackground(Color.white);
       bUpgrade.setBackground(Color.white);
       bAct.addMouseListener(bActListener);
       bRehearse.addMouseListener(bRehearseListener);
       bMove.addMouseListener(bMoveListener);
-      bStart.addMouseListener(bStartListener);
+      // bStart.addMouseListener(bStartListener);
       bWork.addMouseListener(bWorkListener);
       bEnd.addMouseListener(bEndListener);
       bUpgrade.addMouseListener(bUpgradeListener);
