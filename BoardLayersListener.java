@@ -25,12 +25,12 @@ public class BoardLayersListener extends JFrame {
   JLabel cardlabel;
   JLabel playerlabel;
   JLabel mLabel;
+  JLabel sLabel;
 
   //JButtons
   JButton bAct;
   JButton bRehearse;
   JButton bMove;
-  JButton bStart;
   JButton bWork;
   JButton bEnd;
   JButton selectButton;
@@ -42,6 +42,8 @@ public class BoardLayersListener extends JFrame {
 
   JComboBox<String> comboBox;
   ImageIcon icon;
+  ImageIcon shotMarkers;
+  ArrayList<JLabel> shotMarkerList;
 
   boardMouseListener bActListener;
   boardMouseListener bRehearseListener;
@@ -52,7 +54,10 @@ public class BoardLayersListener extends JFrame {
   boardMouseListener bUpgradeListener;
   // Constructor
 
+  JTextArea textArea;
+
   public BoardLayersListener() {
+
       super("DeadWood");
 
 
@@ -69,7 +74,7 @@ public class BoardLayersListener extends JFrame {
        bPane.add(boardlabel, new Integer(0));
 
        // Set the size of the GUI
-       setSize(icon.getIconWidth()+200,icon.getIconHeight());
+       setSize(icon.getIconWidth()+400,icon.getIconHeight());
 
        // Add a scene card to this room
        cardlabel = new JLabel();
@@ -116,34 +121,40 @@ public class BoardLayersListener extends JFrame {
        bMoveListener = new boardMouseListener();
        bMove.addMouseListener(bMoveListener);
 
-      //  bStart = new JButton("START");
-      //  bStart.setBackground(Color.white);
-      //  bStart.setBounds(icon.getIconWidth()+10,120,100, 20);
-      //  bStartListener = new boardMouseListener();
-      //  bStart.addMouseListener(bStartListener);
-
        bWork = new JButton("WORK");
        bWork.setBackground(Color.white);
-       bWork.setBounds(icon.getIconWidth()+10,150,100, 20);
+       bWork.setBounds(icon.getIconWidth()+10,120,100, 20);
        bWorkListener = new boardMouseListener();
        bWork.addMouseListener(bWorkListener);
 
        bEnd = new JButton("END");
        bEnd.setBackground(Color.white);
-       bEnd.setBounds(icon.getIconWidth()+10,180,100, 20);
+       bEnd.setBounds(icon.getIconWidth()+10,150,100, 20);
        bEndListener = new boardMouseListener();
        bEnd.addMouseListener(bEndListener);
 
        bUpgrade = new JButton("Upgrade");
        bUpgrade.setBackground(Color.white);
-       bUpgrade.setBounds(icon.getIconWidth()+10,210,100, 20);
+       bUpgrade.setBounds(icon.getIconWidth()+10,180,100, 20);
        bUpgradeListener = new boardMouseListener();
        bUpgrade.addMouseListener(bUpgradeListener);
 
        selectButton = new JButton("Select");
        selectButton.setBackground(Color.white);
-       selectButton.setBounds(icon.getIconWidth()+10,500,100, 20);
+       selectButton.setBounds(icon.getIconWidth()+10,210,100, 20);
 
+       textArea = new JTextArea();
+       textArea.setPreferredSize(new Dimension(100,100));
+       textArea.setBounds(icon.getIconWidth()+10,800,200,100);
+       textArea.setEditable(false);
+       textArea.setBackground(bPane.getBackground());
+       textArea.setFont(textArea.getFont().deriveFont(18f));
+
+       shotMarkerList = new ArrayList<JLabel>();
+
+       sLabel = new JLabel();
+       shotMarkers = new ImageIcon("shot.png");
+       sLabel.setIcon(shotMarkers);
 
 
        // Place the action buttons in the top layer
@@ -155,15 +166,62 @@ public class BoardLayersListener extends JFrame {
        bPane.add(bEnd, new Integer(2));
        bPane.add(selectButton, new Integer(2));
        bPane.add(bUpgrade ,new Integer(2));
+       bPane.add(textArea, new Integer(2));
        selectButton.setVisible(false);
 
 
+  }
+  int sMSize = 0;
+
+  public void resetShotMarkers(SetRoom room){
+    sMSize = shotMarkerList.size();
+    int[] markerArea = new int[4];
+    System.out.println("bacon");
+
+    for (int i = 0; i < room.mapSize(); i++){
+      markerArea = room.shotMarkerData.get(i);
+      shotMarkerList.add(new JLabel());
+      shotMarkerList.get(i + sMSize).setIcon(new ImageIcon("shot.png"));
+      bPane.add(shotMarkerList.get(i + sMSize), new Integer(2));
+      shotMarkerList.get(i + sMSize).setBounds(markerArea[0], markerArea[1], markerArea[2], markerArea[3]);
+      System.out.println(markerArea[0] + "  " +  markerArea[1] + "  " +  markerArea[2] + "  " +  markerArea[3]);
+    }
+
+  }
+
+  public void removeShotMarker(int[] areaArray){
+    System.out.println("0 " + areaArray[0]);
+    System.out.println("1 " + areaArray[1]);
+
+
+    for(JLabel label : shotMarkerList){
+      System.out.println("horizontal " + label.getX());
+      System.out.println("vertical " +label.getY());
+      if(label.getX() == areaArray[0] && label.getY() == areaArray[1]){
+
+        label.setVisible(false);
+      }
+    }
+  }
+
+  public void changeTextArea(Player currentPlayer, int playerNum){
+    textArea.setText("");
+    textArea.append("Player : " + playerNum + "\n" +
+                    "Rank : " + currentPlayer.getRank() + "\n" +
+                    "Money : " + currentPlayer.getMoney() + "\n" +
+                    "Fame : " + currentPlayer.getFame() + "\n");
   }
 
 
   public void greyOut(String action){
 
       switch(action){
+        case "all":   bMove.removeMouseListener(bMoveListener);
+                      bRehearse.removeMouseListener(bRehearseListener);
+                      bAct.removeMouseListener(bActListener);
+                      bWork.removeMouseListener(bWorkListener);
+                      bUpgrade.removeMouseListener(bUpgradeListener);
+
         case "move":  bMove.setBackground(Color.gray);
                       bMove.removeMouseListener(bMoveListener);
                       break;
@@ -185,6 +243,7 @@ public class BoardLayersListener extends JFrame {
 
 
     public void whiteAgain(){
+      greyOut("all");
       //System.out.println("in white again");
 
       bAct.setBackground(Color.white);
@@ -211,7 +270,20 @@ public class BoardLayersListener extends JFrame {
     temp = 0;
     comboBox = new JComboBox<String>(options);
     comboBox.setSelectedIndex(0);
-    comboBox.setBounds(icon.getIconWidth()+10,410,100, 20);
+    comboBox.setVisible(true);
+    String[] choice = options[0].split(" ");
+    System.out.println(choice[0]);
+    if(choice[0].equals("dollar") || choice[0].equals("fame")){
+      comboBox.setBounds(icon.getIconWidth()+10+120,180,250, 20);
+    }
+    else if(choice[0].equals("(on") || choice[0].equals("(off")){
+      comboBox.setBounds(icon.getIconWidth()+10+120,120,250, 20);
+
+    }
+    else{
+      comboBox.setBounds(icon.getIconWidth()+10+120,90,250, 20);
+    }
+
     bPane.add(comboBox, new Integer(2));
     boardMouseListener bML = new boardMouseListener();
     selectButton.addMouseListener(bML);
@@ -223,6 +295,7 @@ public class BoardLayersListener extends JFrame {
     }
     selectButton.setVisible(false);
     selectButton.removeMouseListener(bML);
+    comboBox.setVisible(false);
     bPane.remove(comboBox);
     return temp;
   }

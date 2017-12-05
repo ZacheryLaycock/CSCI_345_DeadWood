@@ -7,7 +7,8 @@ class SetRoom extends Room{
   SceneCard sceneCard;
   ArrayList<Role> roleArray = new ArrayList<Role>();
   ArrayList<Role> remainingRoles;
-  HashMap<Integer, int[]> shotMarkerData = new HashMap<Integer, int[]>();
+  ArrayList<int[]> shotMarkerData = new ArrayList<int[]>();
+
   int amountOfRoles;
   boolean done;
   int shotMarkers;
@@ -15,7 +16,7 @@ class SetRoom extends Room{
 
 
   public SetRoom(String name, int amountOfRoles, ArrayList<Role> roleArray,
-                 ArrayList<String> neighbors,  HashMap<Integer, int[]> shotMarkerData, int[] area){
+                 ArrayList<String> neighbors,  ArrayList<int[]> shotMarkerData, int[] area){
 
 
     super(name, neighbors, area);
@@ -35,7 +36,10 @@ class SetRoom extends Room{
 
   public void removeShotMarkers(){
     shotMarkers--;
+  }
 
+  public int mapSize(){
+    return shotMarkerData.size();
   }
 
   public void assignSceneCard(SceneCard card){

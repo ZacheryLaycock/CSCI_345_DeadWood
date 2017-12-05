@@ -9,12 +9,12 @@ class Player{
   // String location;
   Room currentRoom;
   public Player(int num){
-    money = 0;
+    money = 99;
     rehearsalBonuses = 0;
     switch(num){
       // case 1 means 3 players
       case 0: rank = 1;
-              fame = 0;
+              fame = 99;
               break;
       case 1: rank = 1;
               fame = 2;

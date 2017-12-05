@@ -13,6 +13,10 @@ class CastingOfficeRoom extends Room{
     super(name,neighbors, area);
     this.dollarMap = dollarMap;
     this.fameMap = fameMap;
+    for (int i = 0; i < dollarMap.size(); i++){
+      System.out.println("dolla dolla " + dollarMap.get(i)[0]);
+      System.out.println("fameayama " + fameMap.get(i)[0]);
+    }
   }
 
   public void upgradeWithMoney(int rank, Player player){

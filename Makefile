@@ -27,7 +27,7 @@ CLASSES = \
 
 default:
 	javac $(CLASSES)
-
+	java DeadWood
 
 clean:
 	$(RM) $(wildcard *.class)

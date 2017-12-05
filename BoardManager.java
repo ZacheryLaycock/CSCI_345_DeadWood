@@ -72,6 +72,7 @@ class BoardManager{
       while(numberOfRemainingRoom != 1){
         for (int currentPlayer = 0; currentPlayer < numberOfPlayers; currentPlayer++){
           System.out.println("Player "+(currentPlayer+1)+"'s turn");
+          board.changeTextArea(listOfPlayer.get(currentPlayer),currentPlayer + 1);
           playerAction(currentPlayer);
         }
       }
@@ -85,10 +86,21 @@ class BoardManager{
     if(!(currentPlayer.currentRoom instanceof SetRoom)){
       if(currentPlayer.currentRoom.getName().equals("trailer")){
         board.greyOut("upgrade");
-        System.out.println("b");
+        //System.out.println("b");
 
       }
-      System.out.println("a");
+      ArrayList<int[]> dollarMap = castingOffice.dollarMap;
+      ArrayList<int[]> fameMap = castingOffice.fameMap;
+      int playerRank = currentPlayer.getRank();
+      int playerMoney = currentPlayer.getMoney();
+      int playerFame = currentPlayer.getFame();
+      if(playerRank == 6){
+        board.greyOut("upgrade");
+      }
+      else if(playerMoney < dollarMap.get(playerRank-1)[0] && playerFame < dollarMap.get(playerRank-1)[0]){
+        board.greyOut("upgrade");
+      }
+      //System.out.println("a");
       board.greyOut("work");
       board.greyOut("act");
       board.greyOut("rehearse");
@@ -97,17 +109,25 @@ class BoardManager{
     else if(currentPlayer.currentRoom instanceof SetRoom){
       SetRoom tempRoom = (SetRoom)currentPlayer.currentRoom;
       if (tempRoom.done == true){
-        System.out.println("sadlk;fhasdkfhsakdlfhasdlkfjhh");
+        //System.out.println("sadlk;fhasdkfhsakdlfhasdlkfjhh");
         board.greyOut("work");
       }
+      if (tempRoom.getSC() != null){
+        // System.out.println(currentPlayer.getRehearsalBonuses() + " OOOOOOOOOOO");
+        // System.out.println((tempRoom.getSC().budget - 1) + " kkkkkkkkkkkkk");
+        if (currentPlayer.getRehearsalBonuses() == (tempRoom.getSC().budget - 1)){
+          board.greyOut("rehearse");
+        }
+      }
+
       if(currentPlayer.currentRole == null){
-        System.out.println("c");
+        //System.out.println("c");
         board.greyOut("act");
         board.greyOut("rehearse");
         board.greyOut("upgrade");
       }
       else{
-        System.out.println("d");
+        //System.out.println("d");
         board.greyOut("move");
         board.greyOut("work");
         board.greyOut("upgrade");
@@ -115,20 +135,80 @@ class BoardManager{
     }
   }
 
+
+  private void upgrade(Player currentPlayer){
+    ArrayList<int[]> dollarMap = castingOffice.dollarMap;
+    ArrayList<int[]> fameMap = castingOffice.fameMap;
+    int playerRank = currentPlayer.getRank();
+    int playerMoney = currentPlayer.getMoney();
+    int playerFame = currentPlayer.getFame();
+
+    System.out.println("rank " + playerRank);
+    ArrayList<String> option = new ArrayList<String>();
+    for(int i = playerRank - 1; i< 5; i++){
+      if(playerMoney >= dollarMap.get(i)[0]){
+        option.add("dollar " + dollarMap.get(i)[0] + " rank = " + (i+2));
+        //System.out.println(dollarMap.get(i)[0]);
+      }
+      if(playerFame >= fameMap.get(i)[0]){
+        option.add("fame " + fameMap.get(i)[0] + " rank = " + (i+2));
+      }
+    }
+    //System.out.println("Hopefully we filled an array with values");
+
+    for(String s : option){
+      System.out.println(s);
+    }
+    int index = board.moveHelper(option.toArray(new String[option.size()]));
+
+    // resetBuffer();
+    // while(buffer.equals("")){
+    //   System.out.print("");
+    //   getInput();
+    // }
+
+    String output = option.get(index);
+    System.out.println(output);
+    String[] outputArray = output.split(" ");
+
+    if(output.charAt(0) == 'd'){
+      castingOffice.upgradeWithMoney(Integer.parseInt(outputArray[4]), currentPlayer);
+    }
+    else{
+      castingOffice.upgradeWithFame(Integer.parseInt(outputArray[4]), currentPlayer);
+    }
+
+    // if (currentPlayer.currentRoom.getName().equals("office")){
+    //   if (input[1].equals("$")){
+    //     castingOffice.upgradeWithMoney(Integer.parseInt(input[2]), currentPlayer);
+    //   }else if (input[1].equalsIgnoreCase("cr")){
+    //     castingOffice.upgradeWithFame(Integer.parseInt(input[2]), currentPlayer);
+    //   } else{
+    //     invalidInput(player);
+    //   }
+    // }
+  }
+
   //takes player action and changes game state
   public void playerAction(int player){
+
     board.whiteAgain();
+
     Player currentPlayer = listOfPlayer.get(player);
     Scanner scanner = new Scanner(System.in);
     System.out.print("What would you like to do? \n$$$$$");
     resetBuffer();
     disableButton(currentPlayer);
+
+
+
     //buffer stores commands from gameboard
+
     while(buffer.equals("")){
       getInput();
       System.out.print("");
     }
-
+    //disableButton(currentPlayer);
 
     String[] input = this.buffer.split(" ");
 
@@ -157,6 +237,7 @@ class BoardManager{
       playerAction(player);
 
     }else if (input[0].equalsIgnoreCase("move")){
+      disableButton(currentPlayer);
       System.out.println("here");
       //get player input here
       resetBuffer();
@@ -165,18 +246,6 @@ class BoardManager{
       String roomName = arrayAdj[board.moveHelper(arrayAdj)];
       Room newRoom = null;
 
-      //construct roomName String
-      /* this code is from text implementation, keeping for debugging purposes
-      String roomName = "";
-      for (int i = 1; i < input.length; i++){
-        if (i < input.length - 1){
-          roomName += input[i] + " ";
-        }
-        else{
-          roomName += input[i];
-        }
-      }
-      */
       for (int i = 0; i < roomList.size(); i++){
         if (roomList.get(i).getName().equalsIgnoreCase(roomName)){
           newRoom = roomList.get(i);
@@ -190,26 +259,22 @@ class BoardManager{
       //player can choose to work after moving
       board.whiteAgain();
       disableButton(currentPlayer);
-      System.out.println("Choose to work or end");
+
+
+      board.greyOut("move");
       resetBuffer();
       while(buffer.equals("")){
         System.out.print("");
         getInput();
       }
       String[] input2 = buffer.split(" ");
-      //System.out.println(input2[0]);
-      //System.out.println(input2.length);
-      /*String arole = "";
-      for (int i = 1; i < input2.length; i++){
-        if (i < input2.length - 1){
-          arole += input2[i] + " ";
-          System.out.println(input2[i]);
-        }
-        else{
-          arole += input2[i];
-        }
-      }*/
-      if (input2[0].equalsIgnoreCase("work") ){
+
+
+
+
+
+      //System.out.println("Choose to work or end");
+       if (input2[0].equalsIgnoreCase("work") ){
         board.greyOut("work");
         String[] roles = workBox(currentPlayer);
         int index = board.moveHelper(roles);
@@ -227,11 +292,17 @@ class BoardManager{
         }
         System.out.println(arole);
         work(currentPlayer, arole);
-      }else if (input2[0].equalsIgnoreCase("end")){
-        //do nothing
+      }else if(input2[0].equalsIgnoreCase("upgrade")){
+        upgrade(currentPlayer);
       }
 
-    }else if (input[0].equalsIgnoreCase("work")){
+      // else if (input2[0].equalsIgnoreCase("end")){
+      //   //do nothing
+      // }
+
+    }
+
+    else if (input[0].equalsIgnoreCase("work")){
 
         if (currentPlayer.currentRoom instanceof SetRoom){
           board.greyOut("work");
@@ -258,15 +329,8 @@ class BoardManager{
     }
 
     else if (input[0].equalsIgnoreCase("upgrade")){
-      if (currentPlayer.currentRoom.getName().equals("office")){
-        if (input[1].equals("$")){
-          castingOffice.upgradeWithMoney(Integer.parseInt(input[2]), currentPlayer);
-        }else if (input[1].equalsIgnoreCase("cr")){
-          castingOffice.upgradeWithFame(Integer.parseInt(input[2]), currentPlayer);
-        } else{
-          invalidInput(player);
-        }
-      }
+      //System.out.println("We are now in Upgrade!");
+      upgrade(currentPlayer);
 
 
     }else if (input[0].equalsIgnoreCase("rehearse")){
@@ -296,6 +360,8 @@ class BoardManager{
     resetBuffer();
 
   }
+
+
 
   public String[] workBox(Player currentPlayer){
     SetRoom currentRoom = (SetRoom) currentPlayer.currentRoom;
@@ -379,12 +445,21 @@ class BoardManager{
 
   public void resetBoard(){
     int counter;
+    //int p = 0;
     for(Room r: roomList){
 
       if(r instanceof SetRoom){
         SetRoom room = (SetRoom) r;
         //reset shot MARKERS
         room.shotMarkers = room.shotMarkerData.size();
+        System.out.println(room.getName());
+        // if (p < 5){
+        //   System.out.println(p);
+        //   board.resetShotMarkers(room);
+        //   p++;
+        // }
+        board.resetShotMarkers(room);
+
 
         //assignSceneCard
         room.assignSceneCard(cardList.get(Math.abs(random.nextInt())%40));
@@ -461,9 +536,10 @@ class BoardManager{
     cardList = XML_Test.cardXML("cards.xml");
     roomList = XML_Test.boardXML("board.xml");
 
-    resetBoard();
+
     board = new BoardLayersListener();
     board.setVisible(true);
+    resetBoard();
 
   }
 
@@ -528,6 +604,7 @@ class BoardManager{
       System.out.println(dR + "\n" + budget + "\n");
       if (dR >= budget){
         setRoom.removeShotMarkers();
+        board.removeShotMarker(setRoom.shotMarkerData.get(setRoom.shotMarkers));
         //System.out.println("shot markers: "+setRoom.shotMarkers);
         if (setRoom.shotMarkers == 0){
           //payout for on or off the card

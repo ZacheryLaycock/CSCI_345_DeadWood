@@ -152,7 +152,8 @@ public class XML_Test{
       NodeList nList = doc.getElementsByTagName("set");
       for (int i = 0; i < nList.getLength(); i++){
         ArrayList<String> neighbors = new ArrayList<String>();
-        HashMap<Integer, int[]> shotMarkers = new HashMap<Integer, int[]>();
+        ArrayList<int[]> shotMarkers = new ArrayList<int[]>();
+        //HashMap<Integer, int[]> shotMarkers = new HashMap<Integer, int[]>();
         Node nNode = nList.item(i);
         if (nNode.getNodeType() == Node.ELEMENT_NODE){
           Element eElement = (Element) nNode;
@@ -197,7 +198,8 @@ public class XML_Test{
                         shotMarkersArea[2] = Integer.parseInt(((Element)steve.item(o)).getAttribute("h"));
                         shotMarkersArea[3] = Integer.parseInt(((Element)steve.item(o)).getAttribute("w"));
 
-                        shotMarkers.put(w, shotMarkersArea);
+                        shotMarkers.add(shotMarkersArea);
+                        shotMarkersArea = new int[4];
                       }
                     }
                   }
@@ -240,8 +242,9 @@ public class XML_Test{
                 }
               }
             }
+            System.out.println(shotMarkers.size());
             roomList.add(new SetRoom(roomName, roleArray.size(), roleArray, neighbors, shotMarkers, area));
-
+            //shotMarkers.clear();
             roleArray.clear();
           }
         }
