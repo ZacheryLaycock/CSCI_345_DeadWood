@@ -4,13 +4,15 @@ class Player{
   int rank;
   int fame;
   int money;
+  int playerNum;
   Role currentRole;
   int rehearsalBonuses;
   // String location;
   Room currentRoom;
-  public Player(int num){
+  public Player(int num, int playerNum){
     money = 99;
     rehearsalBonuses = 0;
+    this.playerNum = playerNum;
     switch(num){
       // case 1 means 3 players
       case 0: rank = 1;
@@ -30,6 +32,10 @@ class Player{
               break;
     }
 
+  }
+
+  public int getPlayerNum(){
+    return this.playerNum;
   }
 
   public void setRank(int rank){
@@ -85,6 +91,10 @@ class Player{
 
   public int getRehearsalBonuses(){
     return rehearsalBonuses;
+  }
+
+  public Room getRoom(){
+    return currentRoom;
   }
 
 }

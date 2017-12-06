@@ -28,6 +28,7 @@ public class XML_Test{
       int[] area = new int[4];
       int[] trailerArea = new int[4];
       int[] roleArea = new int[4];
+      int[] castingArea = new int[4];
       int[] shotMarkersArea = new int[4];
       String description ="";
       ArrayList<Role> roleArray = new ArrayList<Role>();
@@ -96,10 +97,10 @@ public class XML_Test{
                 }
               }
               if(attributeList.item(z).getNodeName().equals("area")){
-                area[0] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("x"));
-                area[1] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("y"));
-                area[2] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("h"));
-                area[3] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("w"));
+                castingArea[0] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("x"));
+                castingArea[1] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("y"));
+                castingArea[2] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("h"));
+                castingArea[3] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("w"));
                 //  System.out.println(((Element)attributeList.item(z)).getAttribute("x")+" "+((Element)attributeList.item(z)).getAttribute("y")
                 //  +" "+((Element)attributeList.item(z)).getAttribute("h")+" "+((Element)attributeList.item(z)).getAttribute("w"));
               }
@@ -139,7 +140,7 @@ public class XML_Test{
             }
           }
         }
-        roomList.add(new CastingOfficeRoom("office", neighbors, area, dollarMap, fameMap));
+        roomList.add(new CastingOfficeRoom("office", neighbors, castingArea, dollarMap, fameMap));
 
       }
 
@@ -247,6 +248,7 @@ public class XML_Test{
             roomList.add(new SetRoom(roomName, roleArray.size(), roleArray, neighbors, shotMarkers, area));
             //shotMarkers.clear();
             roleArray.clear();
+            area = new int[4];
           }
         }
         return roomList;

@@ -24,4 +24,8 @@ class Room{
   public String toString(){
     return "Name :" + name;
   }
+
+  public int[] getArea(){
+    return this.area;
+  }
 }

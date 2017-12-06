@@ -244,6 +244,7 @@ class BoardManager{
         }
       }
       boolean moved = locationManager.updatePlayerLocation(currentPlayer, newRoom, currentPlayer.currentRoom);
+      board.movePlayer(currentPlayer);
       if (!moved){
         System.out.println("You can't move there.");
         invalidInput(player);
@@ -423,10 +424,10 @@ class BoardManager{
     }
     //ask player to choose different role
     if (foundInRoom){
-      currentRoom.remainingRoles.remove(index1);
+      currentRoom.remainingRoles.remove(index1-1);
     }
     else if (foundOnCard){
-      currentRoom.getSC().remainingRoles.remove(index2);
+      currentRoom.getSC().remainingRoles.remove(index2-1);
     }
     if (newRole.name.equals("")){
       System.out.println("invalid role");
@@ -536,7 +537,7 @@ class BoardManager{
 
 
     for(int i = 0; i< numberOfPlayers; i++){
-      listOfPlayer.add(new Player(playerType));
+      listOfPlayer.add(new Player(playerType, i));
     }
 
 

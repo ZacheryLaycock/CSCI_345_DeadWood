@@ -226,6 +226,26 @@ public class BoardLayersListener extends JFrame {
     }
   }
 
+  public void movePlayer(Player player){
+    Room room = player.getRoom();
+    JLabel playerIMG = players.get(player.getPlayerNum());
+    int[] area = room.getArea();
+    if (room instanceof SetRoom){
+      playerIMG.setBounds(area[0]+player.getPlayerNum()*40, area[1]+120, 47, 47);
+    } else{
+        int index = player.getPlayerNum();
+        if(index > 2 && index < 6){
+          players.get(index).setBounds(area[0] + 60 * (index -3), area[1] + 50, 47, 47);
+        }
+        else if(index >= 6){
+          players.get(index).setBounds(area[0] + 60 * (index -6), area[1] + 100, 47, 47);
+        }
+        else{
+          players.get(index).setBounds(area[0] + 60 * index, area[1], 47, 47);
+        }
+    }
+  }
+
   public void changeRollArea(int diceRoll, int budget){
     try{
       greyOut("act");
@@ -328,8 +348,8 @@ public class BoardLayersListener extends JFrame {
         case "select" : selectButton.setBackground(Color.gray);
                         break;
         case "end" : bEnd.setBackground(Color.gray);
-                        bEnd.removeMouseListener(bEndListener);
-                        break;
+                     bEnd.removeMouseListener(bEndListener);
+                     break;
 
       }
     }
@@ -366,13 +386,19 @@ public class BoardLayersListener extends JFrame {
     String[] choice = options[0].split(" ");
     System.out.println(choice[0]);
     if(choice[0].equals("dollar") || choice[0].equals("fame")){
+      greyOut("upgrade");
+      greyOut("end");
       comboBox.setBounds(icon.getIconWidth()+10+120,180,250, 20);
     }
     else if(choice[0].equals("(on") || choice[0].equals("(off")){
+      greyOut("end");
       comboBox.setBounds(icon.getIconWidth()+10+120,120,250, 20);
 
     }
     else{
+      greyOut("move");
+      greyOut("end");
+      greyOut("work");
       comboBox.setBounds(icon.getIconWidth()+10+120,90,250, 20);
     }
 
