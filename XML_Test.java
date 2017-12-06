@@ -26,6 +26,7 @@ public class XML_Test{
       String roleName;
       int roleLevel;
       int[] area = new int[4];
+      int[] trailerArea = new int[4];
       int[] roleArea = new int[4];
       int[] shotMarkersArea = new int[4];
       String description ="";
@@ -57,17 +58,17 @@ public class XML_Test{
                 }
               }
               if(attributeList.item(z).getNodeName().equals("area")){
-                area[0] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("x"));
-                area[1] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("y"));
-                area[2] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("h"));
-                area[3] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("w"));
+                trailerArea[0] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("x"));
+                trailerArea[1] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("y"));
+                trailerArea[2] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("h"));
+                trailerArea[3] = Integer.parseInt(((Element)attributeList.item(z)).getAttribute("w"));
               //   System.out.println(((Element)attributeList.item(z)).getAttribute("x")+" "+((Element)attributeList.item(z)).getAttribute("y")
               //   +" "+((Element)attributeList.item(z)).getAttribute("h")+" "+((Element)attributeList.item(z)).getAttribute("w"));
               }
             }
           }
         }
-        roomList.add( new Room("trailer", neighbors, area));
+        roomList.add( new Room("trailer", neighbors, trailerArea));
       }
 
 

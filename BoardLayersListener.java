@@ -14,11 +14,14 @@ import java.util.*;
 import javax.swing.ImageIcon;
 import javax.imageio.ImageIO;
 import java.awt.event.*;
+import java.util.concurrent.TimeUnit;
+
 
 
 public class BoardLayersListener extends JFrame {
 
   // Private Attributes
+  ArrayList<JLabel> players = new ArrayList<JLabel>();
 
   // JLabels
   JLabel boardlabel;
@@ -36,6 +39,7 @@ public class BoardLayersListener extends JFrame {
   JButton selectButton;
   JButton bUpgrade;
 
+
   String current = "";
   // JLayered Pane
   JLayeredPane bPane;
@@ -48,13 +52,14 @@ public class BoardLayersListener extends JFrame {
   boardMouseListener bActListener;
   boardMouseListener bRehearseListener;
   boardMouseListener bMoveListener;
-  boardMouseListener bStartListener;
   boardMouseListener bWorkListener;
   boardMouseListener bEndListener;
   boardMouseListener bUpgradeListener;
+  boardMouseListener bML;
   // Constructor
 
   JTextArea textArea;
+  JTextArea rollArea;
 
   public BoardLayersListener() {
 
@@ -89,12 +94,8 @@ public class BoardLayersListener extends JFrame {
 
        // Add a dice to represent a player.
        // Role for Crusty the prospector. The x and y co-ordiantes are taken from Board.xml file
-       playerlabel = new JLabel();
-       ImageIcon pIcon = new ImageIcon("r2.png");
-       playerlabel.setIcon(pIcon);
        //playerlabel.setBounds(114,227,pIcon.getIconWidth(),pIcon.getIconHeight());
-       playerlabel.setBounds(114,227,46,46);
-       bPane.add(playerlabel,new Integer(3));
+
 
        // Create the Menu for action buttons
        mLabel = new JLabel("MENU");
@@ -145,10 +146,17 @@ public class BoardLayersListener extends JFrame {
 
        textArea = new JTextArea();
        textArea.setPreferredSize(new Dimension(100,100));
-       textArea.setBounds(icon.getIconWidth()+10,800,200,100);
+       textArea.setBounds(icon.getIconWidth()+10,775,200,200);
        textArea.setEditable(false);
        textArea.setBackground(bPane.getBackground());
        textArea.setFont(textArea.getFont().deriveFont(18f));
+
+       rollArea = new JTextArea();
+       rollArea.setPreferredSize(new Dimension(100,300));
+       rollArea.setBounds(icon.getIconWidth()+10+120,30,200,50);
+       rollArea.setEditable(false);
+       rollArea.setBackground(bPane.getBackground());
+       rollArea.setFont(rollArea.getFont().deriveFont(12f));
 
        shotMarkerList = new ArrayList<JLabel>();
 
@@ -161,12 +169,12 @@ public class BoardLayersListener extends JFrame {
        bPane.add(bAct, new Integer(2));
        bPane.add(bRehearse, new Integer(2));
        bPane.add(bMove, new Integer(2));
-       //bPane.add(bStart, new Integer(2));
        bPane.add(bWork, new Integer(2));
        bPane.add(bEnd, new Integer(2));
        bPane.add(selectButton, new Integer(2));
        bPane.add(bUpgrade ,new Integer(2));
        bPane.add(textArea, new Integer(2));
+       bPane.add(rollArea, new Integer(2));
        selectButton.setVisible(false);
 
 
@@ -189,6 +197,20 @@ public class BoardLayersListener extends JFrame {
 
   }
 
+  public int startGame(){
+    System.out.println("entered ");
+    greyOut("act");
+    greyOut("rehearse");
+    greyOut("work");
+    greyOut("move");
+    greyOut("upgrade");
+    greyOut("end");
+    String[] start = {"2 Players", "3 Players", "4 Players", "5 Players",
+                      "6 Players", "7 Players", "8 Players"};
+    return (moveHelper(start)+2);
+
+  }
+
   public void removeShotMarker(int[] areaArray){
     System.out.println("0 " + areaArray[0]);
     System.out.println("1 " + areaArray[1]);
@@ -204,12 +226,78 @@ public class BoardLayersListener extends JFrame {
     }
   }
 
+  public void changeRollArea(int diceRoll, int budget){
+    try{
+      greyOut("act");
+      greyOut("rehearse");
+      greyOut("work");
+      greyOut("move");
+      greyOut("upgrade");
+      if (diceRoll >= budget){
+        rollArea.setText("");
+        rollArea.append("Congrats! you Rolled : " + diceRoll + "\n" +
+                        "The Scene can now progress!");
+      }
+      else{
+        rollArea.setText("");
+        rollArea.append("Bummer! you Rolled : " + diceRoll + "\n"
+                        + "Best of luck next time partner!");
+      }
+      current = "";
+      while(current.equals("")){
+        System.out.println("");
+      }
+      current = "";
+
+    }
+    catch(Exception e){
+      e.printStackTrace();
+    }
+
+  }
+
+  public void createPlayers(int numberOfPlayers, Room trailer){
+    String[] colors = {"b","c","g","o","r","p","v","y"};
+    int[] area = trailer.area;
+    int index = 0;
+    String extension = ".png";
+    if(numberOfPlayers < 7){
+      extension = "1"+extension;
+    }
+    else{
+      extension = "2"+extension;
+    }
+      for(String s: colors){
+        if(index >= numberOfPlayers){
+          break;
+        }
+        players.add(new JLabel());
+        players.get(players.size()-1).setIcon(new ImageIcon(s+extension));
+        bPane.add(players.get(players.size()-1), new Integer(3));
+        if(index > 2 && index < 6){
+          players.get(index).setBounds(area[0] + 60 * (index -3), area[1] + 50, 47, 47);
+        }
+        else if(index >= 6){
+          players.get(index).setBounds(area[0] + 60 * (index -6), area[1] + 100, 47, 47);
+        }
+        else{
+          players.get(index).setBounds(area[0] + 60 * index, area[1], 47, 47);
+        }
+          index++;
+      }
+    }
+
+
+
   public void changeTextArea(Player currentPlayer, int playerNum){
     textArea.setText("");
     textArea.append("Player : " + playerNum + "\n" +
                     "Rank : " + currentPlayer.getRank() + "\n" +
                     "Money : " + currentPlayer.getMoney() + "\n" +
                     "Fame : " + currentPlayer.getFame() + "\n");
+    if (currentPlayer.getRole() != null){
+      textArea.append("Rehearsal Bonus : " + currentPlayer.getRehearsalBonuses());
+    }
   }
 
 
@@ -237,6 +325,11 @@ public class BoardLayersListener extends JFrame {
         case "upgrade": bUpgrade.setBackground(Color.gray);
                         bUpgrade.removeMouseListener(bUpgradeListener);
                         break;
+        case "select" : selectButton.setBackground(Color.gray);
+                        break;
+        case "end" : bEnd.setBackground(Color.gray);
+                        bEnd.removeMouseListener(bEndListener);
+                        break;
 
       }
     }
@@ -245,18 +338,17 @@ public class BoardLayersListener extends JFrame {
     public void whiteAgain(){
       greyOut("all");
       //System.out.println("in white again");
+      rollArea.setText("");
 
       bAct.setBackground(Color.white);
       bRehearse.setBackground(Color.white);
       bMove.setBackground(Color.white);
-      // bStart.setBackground(Color.white);
       bWork.setBackground(Color.white);
       bEnd.setBackground(Color.white);
       bUpgrade.setBackground(Color.white);
       bAct.addMouseListener(bActListener);
       bRehearse.addMouseListener(bRehearseListener);
       bMove.addMouseListener(bMoveListener);
-      // bStart.addMouseListener(bStartListener);
       bWork.addMouseListener(bWorkListener);
       bEnd.addMouseListener(bEndListener);
       bUpgrade.addMouseListener(bUpgradeListener);
@@ -285,7 +377,7 @@ public class BoardLayersListener extends JFrame {
     }
 
     bPane.add(comboBox, new Integer(2));
-    boardMouseListener bML = new boardMouseListener();
+    bML = new boardMouseListener();
     selectButton.addMouseListener(bML);
     selectButton.setVisible(true);
     while(clicked == false){

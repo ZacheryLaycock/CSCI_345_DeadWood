@@ -34,17 +34,9 @@ class BoardManager{
   int numberOfRemainingRoom;
 
 
-  public BoardManager(int numberOfPlayers){
+  public BoardManager(){
 
-    if(numberOfPlayers < 4){
-      numberOfDays = 3;
-    }
-    else{
-      numberOfDays = 4;
-    }
 
-    this.numberOfPlayers = numberOfPlayers;
-    this.numberOfRemainingRoom =10;
 
     setUp();
     for (Room room:roomList){
@@ -497,7 +489,25 @@ class BoardManager{
 
   public void setUp(){
     //create players
+    bank = new Bank();
+    dice = new Dice();
+    this.locationManager = new LocationManager();
+    this.rehearsalManager = new RehearsalManager();
+    //castingOffice = new CastingOfficeRoom();
+    //determine play order
+
+
+    // a bunch of set rooms with roles
+    // parse through xml file to build rooms
+    cardList = XML_Test.cardXML("cards.xml");
+    roomList = XML_Test.boardXML("board.xml");
+
+
+    board = new BoardLayersListener();
+    board.setVisible(true);
+    numberOfPlayers = board.startGame();
     int playerType;
+    System.out.println("number of players =" + numberOfPlayers);
     switch(numberOfPlayers){
       // start w 2 credits
       case 5: playerType = 1;
@@ -514,32 +524,31 @@ class BoardManager{
       break;
     }
 
+    if(numberOfPlayers < 4){
+      numberOfDays = 3;
+    }
+    else{
+      numberOfDays = 4;
+    }
+
+    this.numberOfPlayers = numberOfPlayers;
+    this.numberOfRemainingRoom =10;
+
+
     for(int i = 0; i< numberOfPlayers; i++){
       listOfPlayer.add(new Player(playerType));
     }
 
 
-
-
-    bank = new Bank();
-    dice = new Dice();
-    this.locationManager = new LocationManager();
-    this.rehearsalManager = new RehearsalManager();
-    //castingOffice = new CastingOfficeRoom();
-    //determine play order
     determinePlayOrder();
-
-
-
-    // a bunch of set rooms with roles
-    // parse through xml file to build rooms
-    cardList = XML_Test.cardXML("cards.xml");
-    roomList = XML_Test.boardXML("board.xml");
-
-
-    board = new BoardLayersListener();
-    board.setVisible(true);
     resetBoard();
+
+    //get trailer
+    for(Room room : roomList){
+      if(room.getName().equalsIgnoreCase("trailer")){
+        board.createPlayers(numberOfPlayers,room);
+      }
+    }
 
   }
 
@@ -601,6 +610,7 @@ class BoardManager{
         System.out.println("shot markers: "+setRoom.shotMarkers);
       }
       int dR = (dice.rollDice() + currentPlayer.rehearsalBonuses);
+      board.changeRollArea(dR, budget);
       System.out.println(dR + "\n" + budget + "\n");
       if (dR >= budget){
         setRoom.removeShotMarkers();
