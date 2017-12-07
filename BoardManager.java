@@ -35,19 +35,12 @@ class BoardManager{
 
 
   public BoardManager(){
-
-
-
     setUp();
     for (Room room:roomList){
       if (room.getName().equals("office")){
         this.castingOffice = (CastingOfficeRoom) room;
       }
     }
-    ///////////////////////////Testing
-
-
-    ////////////////////////////
     play();
   }
 
@@ -65,9 +58,12 @@ class BoardManager{
         for (int currentPlayer = 0; currentPlayer < numberOfPlayers; currentPlayer++){
           System.out.println("Player "+(currentPlayer+1)+"'s turn");
           board.changeTextArea(listOfPlayer.get(currentPlayer),currentPlayer + 1);
-          playerAction(currentPlayer);
+          if (numberOfRemainingRoom != 1){
+            playerAction(currentPlayer);
+          }
         }
       }
+      System.out.println("end of Day");
       numberOfDays--;
       resetBoard();
     }
@@ -245,6 +241,10 @@ class BoardManager{
       }
       boolean moved = locationManager.updatePlayerLocation(currentPlayer, newRoom, currentPlayer.currentRoom);
       board.movePlayer(currentPlayer);
+      if (newRoom instanceof SetRoom){
+        System.out.println("This happened");
+        board.flipCard((SetRoom) newRoom);
+      }
       if (!moved){
         System.out.println("You can't move there.");
         invalidInput(player);
@@ -424,21 +424,26 @@ class BoardManager{
     }
     //ask player to choose different role
     if (foundInRoom){
+      //board.moveToRole(player, currentRoom.remainingRoles.get(index1-1).getArea());
       currentRoom.remainingRoles.remove(index1-1);
     }
     else if (foundOnCard){
+      //board.moveToRole(player, currentRoom.getSC().remainingRoles.get(index2-1).getArea());
       currentRoom.getSC().remainingRoles.remove(index2-1);
     }
     if (newRole.name.equals("")){
       System.out.println("invalid role");
     } else {
       player.currentRole = newRole;
+      board.moveToRole(player, newRole.getArea());
+
     }
   }
 
   public void resetBoard(){
     int counter;
     //int p = 0;
+    board.NUKECARDS();
     for(Room r: roomList){
 
       if(r instanceof SetRoom){
@@ -446,16 +451,10 @@ class BoardManager{
         //reset shot MARKERS
         room.shotMarkers = room.shotMarkerData.size();
         System.out.println(room.getName());
-        // if (p < 5){
-        //   System.out.println(p);
-        //   board.resetShotMarkers(room);
-        //   p++;
-        // }
         board.resetShotMarkers(room);
-
-
         //assignSceneCard
         room.assignSceneCard(cardList.get(Math.abs(random.nextInt())%40));
+
         room.sceneCard.remainingRoles.clear();
         for(Role role : room.sceneCard.roleArray){
           room.sceneCard.remainingRoles.add(role);
@@ -471,16 +470,18 @@ class BoardManager{
     }
 
     for (int i = 0; i < roomList.size(); i++){
-      //System.out.println(roomList.get(i).toString());
       if (roomList.get(i).getName().equals("trailer")){
         for (int y = 0; y < listOfPlayer.size(); y++){
           listOfPlayer.get(y).setLocation(roomList.get(i));
+          board.movePlayer(listOfPlayer.get(y));
         }
       }
     }
 
     for(Player player: listOfPlayer){
-
+      // if (!player.getRoom().getName().equals("trailer")){
+      //   board.movePlayer(player);
+      // }
       player.rehearsalBonuses = 0;
       player.changeRole(null);
     }
@@ -542,14 +543,15 @@ class BoardManager{
 
 
     determinePlayOrder();
-    resetBoard();
-
-    //get trailer
     for(Room room : roomList){
       if(room.getName().equalsIgnoreCase("trailer")){
         board.createPlayers(numberOfPlayers,room);
       }
     }
+    resetBoard();
+
+    //get trailer
+
 
   }
 
@@ -638,6 +640,10 @@ class BoardManager{
               }
             }
             for(int y = 0; y < listOfPlayer.size(); y++){
+              if (listOfPlayer.get(y).getRoom() == setRoom){
+                board.movePlayer(listOfPlayer.get(y));
+                listOfPlayer.get(y).roleComplete();
+              }
               Role aRole = listOfPlayer.get(y).currentRole;
               for (int i = 0; i < numberOfRoles; i++){
                 if (aRole != null && aRole.getName().equals(setRoom.sceneCard.roleArray.get(i).getName())){
@@ -648,12 +654,19 @@ class BoardManager{
 
           }
           else{
+            for(int y = 0; y < listOfPlayer.size(); y++){
+              if (listOfPlayer.get(y).getRoom() == setRoom){
+                board.movePlayer(listOfPlayer.get(y));
+                listOfPlayer.get(y).roleComplete();
+              }
+            }
             bank.setMoney(currentPlayer, currentPlayer.rank);
             bank.setMoney(currentPlayer, 1);
             bank.setFame(currentPlayer, 1);
           }
+          numberOfRemainingRoom--;
           setRoom.completeRoom();
-          currentPlayer.roleComplete();
+          //currentPlayer.roleComplete();
         }
         else{
           int no = 0;

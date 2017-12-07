@@ -22,6 +22,7 @@ public class BoardLayersListener extends JFrame {
 
   // Private Attributes
   ArrayList<JLabel> players = new ArrayList<JLabel>();
+  ArrayList<JLabel> cards = new ArrayList<JLabel>();
 
   // JLabels
   JLabel boardlabel;
@@ -82,14 +83,14 @@ public class BoardLayersListener extends JFrame {
        setSize(icon.getIconWidth()+400,icon.getIconHeight());
 
        // Add a scene card to this room
-       cardlabel = new JLabel();
-       ImageIcon cIcon =  new ImageIcon("01.png");
-       cardlabel.setIcon(cIcon);
-       cardlabel.setBounds(20,60,cIcon.getIconWidth(),cIcon.getIconHeight());
-       cardlabel.setOpaque(true);
+      //  cardlabel = new JLabel();
+      //  ImageIcon cIcon =  new ImageIcon("01.png");
+      //  cardlabel.setIcon(cIcon);
+      //  cardlabel.setBounds(20,60,cIcon.getIconWidth(),cIcon.getIconHeight());
+      //  cardlabel.setOpaque(true);
 
        // Add the card to the lower layer
-       bPane.add(cardlabel, new Integer(1));
+      // bPane.add(cardlabel, new Integer(1));
 
 
        // Add a dice to represent a player.
@@ -228,21 +229,57 @@ public class BoardLayersListener extends JFrame {
 
   public void movePlayer(Player player){
     Room room = player.getRoom();
+    System.out.println(player.getPlayerNum());
     JLabel playerIMG = players.get(player.getPlayerNum());
     int[] area = room.getArea();
     if (room instanceof SetRoom){
       playerIMG.setBounds(area[0]+player.getPlayerNum()*40, area[1]+120, 47, 47);
-    } else{
-        int index = player.getPlayerNum();
-        if(index > 2 && index < 6){
-          players.get(index).setBounds(area[0] + 60 * (index -3), area[1] + 50, 47, 47);
-        }
-        else if(index >= 6){
-          players.get(index).setBounds(area[0] + 60 * (index -6), area[1] + 100, 47, 47);
-        }
-        else{
-          players.get(index).setBounds(area[0] + 60 * index, area[1], 47, 47);
-        }
+    }
+    else{
+      int index = player.getPlayerNum();
+      if(index > 2 && index < 6){
+        players.get(index).setBounds(area[0] + 60 * (index -3), area[1] + 50, 47, 47);
+      }
+      else if(index >= 6){
+        players.get(index).setBounds(area[0] + 60 * (index -6), area[1] + 100, 47, 47);
+      }
+      else{
+        players.get(index).setBounds(area[0] + 60 * index, area[1], 47, 47);
+      }
+    }
+  }
+
+
+
+  public void flipCard(SetRoom room){
+    SceneCard card = room.getSC();
+    if (card != null){
+      int[] area = room.getArea();
+      JLabel cardIMG = new JLabel();
+      cards.add(cardIMG);
+      ImageIcon icon = new ImageIcon(card.getImg());
+      cardIMG.setIcon(icon);
+      cardIMG.setBounds(area[0], area[1], icon.getIconWidth(), icon.getIconHeight());
+      bPane.add(cardIMG, new Integer(3));
+    }
+    //System.out.println(room.getSC());
+  }
+
+  public void NUKECARDS(){
+    cards.clear();
+  }
+
+
+  public void moveToRole(Player player, int[] area){
+    SetRoom room = (SetRoom)(player.getRoom());
+    int[] roomArea = room.getRoomArea();
+    JLabel playerIMG = players.get(player.getPlayerNum());
+    System.out.print(player.getRole().getName());
+    if (player.getRole().getOnCard()){
+      playerIMG.setBounds(roomArea[0] + area[0], roomArea[1] + area[1], area[2], area[3]);
+    }
+    else{
+      playerIMG.setBounds(area[0], area[1], area[2], area[3]);
     }
   }
 
@@ -273,8 +310,10 @@ public class BoardLayersListener extends JFrame {
     catch(Exception e){
       e.printStackTrace();
     }
-
   }
+
+
+
 
   public void createPlayers(int numberOfPlayers, Room trailer){
     String[] colors = {"b","c","g","o","r","p","v","y"};
@@ -303,7 +342,7 @@ public class BoardLayersListener extends JFrame {
         else{
           players.get(index).setBounds(area[0] + 60 * index, area[1], 47, 47);
         }
-          index++;
+        index++;
       }
     }
 

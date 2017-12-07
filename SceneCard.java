@@ -31,4 +31,8 @@ class SceneCard{
   public String getName(){
     return this.name;
   }
+
+  public String getImg(){
+    return this.img;
+  }
 }

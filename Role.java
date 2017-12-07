@@ -17,20 +17,22 @@ class Role{
   }
 
   public String toString(){
-    return name + " Name " + description + " Description " + rank + " Rank ";
+    return this.name + " Name " + this.description + " Description " + this.rank + " Rank ";
   }
 
   public String getName(){
-    return name;
+    return this.name;
   }
 
   public int getRank(){
-    return rank;
+    return this.rank;
   }
 
-  // public checkPlayerRank(){
-  //
-  // }
+  public int[] getArea(){
+    return this.area;
+  }
 
-
+  public boolean getOnCard(){
+    return this.onCard;
+  }
 }

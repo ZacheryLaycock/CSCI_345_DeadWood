@@ -239,6 +239,7 @@ public class XML_Test{
                     }
                     role = new Role(roleName, description, roleLevel, roleArea, false);
                     roleArray.add(role);
+                    roleArea = new int[4];
                     }
                   }
                 }
@@ -322,6 +323,7 @@ public class XML_Test{
                   }
                   Role role = new Role(roleName, description, roleLevel, roleArea, true);
                   roleArray.add(role);
+                  roleArea = new int[4];
                 }
               }
             }

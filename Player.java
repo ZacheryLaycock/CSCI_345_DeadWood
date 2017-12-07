@@ -15,7 +15,7 @@ class Player{
     this.playerNum = playerNum;
     switch(num){
       // case 1 means 3 players
-      case 0: rank = 1;
+      case 0: rank = 6;
               fame = 99;
               break;
       case 1: rank = 1;

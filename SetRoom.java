@@ -32,6 +32,7 @@ class SetRoom extends Room{
     this.done = false;
     this.sceneCard = null;
     this.shotMarkers = shotMarkerData.size();
+    this.area = area;
   }
 
   public void removeShotMarkers(){
@@ -61,5 +62,13 @@ class SetRoom extends Room{
   public void completeRoom(){
     this.done = true;
     this.sceneCard = null;
+  }
+
+  public ArrayList<Role> getRoleList(){
+    return this.remainingRoles;
+  }
+
+  public int[] getRoomArea(){
+    return this.area;
   }
 }
