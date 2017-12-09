@@ -156,7 +156,7 @@ public class BoardLayersListener extends JFrame {
 
        textArea = new JTextArea();
        textArea.setPreferredSize(new Dimension(100,100));
-       textArea.setBounds(icon.getIconWidth()+10,750,200,200);
+       textArea.setBounds(icon.getIconWidth()+10,500,200,200);
        textArea.setEditable(false);
        textArea.setBackground(bPane.getBackground());
        textArea.setFont(textArea.getFont().deriveFont(18f));
@@ -368,6 +368,9 @@ public class BoardLayersListener extends JFrame {
 
   public void changeTextArea(Player currentPlayer, int playerNum, int day){
     textArea.setText("");
+    if (day == 0){
+      textArea.append("The Winner is Player " + playerNum + " Congratulations!! " + "\n");
+    }
     textArea.append("Player : " + playerNum + "\n" +
                     "Day : " + day + "\n" +
                     "Rank : " + currentPlayer.getRank() + "\n" +

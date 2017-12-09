@@ -12,12 +12,13 @@ import java.util.Scanner;
 import java.util.Collections;
 import java.util.Random;
 import java.lang.Math;
+import java.util.Iterator;
 
 
 class BoardManager{
 
+  //Global varaible Bank
   BoardLayersListener board;
-  // game objects
   Random random = new Random();
   ArrayList<Player> listOfPlayer = new ArrayList<Player>();
   ArrayList<Integer> playerOrder;
@@ -425,11 +426,19 @@ class BoardManager{
     }
     else if (foundOnCard){
       //board.moveToRole(player, currentRoom.getSC().remainingRoles.get(index2-1).getArea());
+      boolean flag = false;
       int index = 0;
-      for(Role r :currentRoom.getSC().remainingRoles){
+      Iterator itr = currentRoom.getSC().remainingRoles.iterator();
+      while(itr.hasNext()){
+        Role r = (Role)itr.next();
         if(r.getName().equals(newRole.getName())){
-          currentRoom.getSC().remainingRoles.remove(index);
+          //flag = true;
+          //currentRoom.getSC().remainingRoles.remove(index);
+          itr.remove();
         }
+        // if (flag){
+        //   currentRoom.getSC().remainingRoles.remove(index2 - 1);
+        // }
         index++;
       }
     }
@@ -624,7 +633,7 @@ class BoardManager{
         //System.out.println("shot markers: "+setRoom.shotMarkers);
         if (setRoom.shotMarkers == 0){
 
-
+          ArrayList<Player> helperArray = new ArrayList<Player>();
           ArrayList<Player> playersOnCard = new ArrayList<Player>();
           ArrayList<Integer> diceArray = new ArrayList<Integer>();
           ArrayList<Integer> rollList = new ArrayList<Integer>();
@@ -633,6 +642,7 @@ class BoardManager{
             diceArray.add(dice.rollDice());
 
           }
+          System.out.println("111");
           Collections.sort(diceArray);
           Collections.reverse(diceArray);
           int j = numberOfRoles -1;
@@ -643,6 +653,7 @@ class BoardManager{
               j = numberOfRoles -1;
             }
           }
+          System.out.println("222");
           //loop through every player, check if they are on set
           for(int y = 0; y < listOfPlayer.size(); y++){
             if (listOfPlayer.get(y).getRoom() == setRoom){
@@ -661,43 +672,73 @@ class BoardManager{
               }
             }
           }
+          System.out.println("333");
           if (!playersOnCard.isEmpty()){
+            System.out.println("ArrayNotEmpty");
             int temp;
             Player tempPlayer;
             LinkedList<Player> playerArray = new LinkedList<Player>();
-            for (Player aPlayer : playersOnCard){
-              if(playerArray.isEmpty()){
-                playerArray.add(aPlayer);
-              }
-              else {
-                for(int i = 0; i< playerArray.size(); i++){
-                  if(aPlayer.getRole().getRank() > playerArray.get(i).getRole().getRank()){
-                    if(i == playerArray.size()-1){
-                      playerArray.addLast(aPlayer);
-                    }
-                  }
-                  else{
-                    playerArray.add(i,aPlayer);
+            playerArray.add(playersOnCard.get(0));
+            // for (Player aPlayer : playersOnCard){
+            //     System.out.println("playaplaya = " + aPlayer.getPlayerNum());
+            //     System.out.println("else else");
+            //     int z = playerArray.size();
+            //     for(int i = 0; i < z; i++){
+            //       if(aPlayer.getRole().getRank() > playerArray.get(i).getRole().getRank()){
+            //         if(i == playerArray.size()-1){
+            //           playerArray.addLast(aPlayer);
+            //
+            //         }
+            //       }
+            //       else{
+            //         System.out.println("bacon eggs and cheese");
+            //         playerArray.add(i,aPlayer);
+            //       }
+            //     }
+            // }
+            //look at every player currently on the card
+            for (int i = 1; i<playersOnCard.size(); i++){
+              //place player into sorted array based of rank of current role
+              int psize = playerArray.size();
+              for (int x = 0; x<psize; x++){
+                if(playersOnCard.get(i).getRole().getRank() > playerArray.get(x).getRole().getRank()){
+                  if(x == playerArray.size()-1){
+                    playerArray.addLast(playersOnCard.get(i));
                   }
                 }
+                else{
+                  System.out.println("bacon eggs and cheese");
+                  playerArray.add(x, playersOnCard.get(i));
+                }
               }
+
             }
             Collections.reverse(playerArray);
+            for (int h = 0; h < playerArray.size(); h++){
+              System.out.println("player = " + playerArray.get(h).getPlayerNum());
+            }
+            //System.out.println()
             int k = 0;
+            System.out.println("444");
             for (int i = 0; i < rollList.size(); i++){
               bank.setMoney(playerArray.get(k),rollList.get(i));
-              System.out.println(rollList.get(i));
+              System.out.println("roll = " + rollList.get(i));
               if (k == playerArray.size() - 1){
                 k = 0;
               }
+              else{
+                k++;
+              }
             }
           }
+          System.out.println("555");
           for(int y = 0; y < listOfPlayer.size(); y++){
             if (listOfPlayer.get(y).getRoom() == setRoom){
               board.movePlayer(listOfPlayer.get(y));
               listOfPlayer.get(y).roleComplete();
             }
           }
+          System.out.println("666");
           numberOfRemainingRoom--;
           setRoom.completeRoom();
           //currentPlayer.roleComplete();
@@ -726,6 +767,9 @@ class BoardManager{
 
   public void endGame(){
     int winner = bank.computePlayerScore(listOfPlayer);
+    Player gewinner = listOfPlayer.get(winner);
+    System.out.println(numberOfDays);
+    board.changeTextArea(gewinner, winner, numberOfDays);
     System.out.println("The winner is player " + winner + " ");
   }
 }
