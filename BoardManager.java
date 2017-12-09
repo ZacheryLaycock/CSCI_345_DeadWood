@@ -57,7 +57,7 @@ class BoardManager{
       while(numberOfRemainingRoom != 1){
         for (int currentPlayer = 0; currentPlayer < numberOfPlayers; currentPlayer++){
           System.out.println("Player "+(currentPlayer+1)+"'s turn");
-          board.changeTextArea(listOfPlayer.get(currentPlayer),currentPlayer + 1);
+          board.changeTextArea(listOfPlayer.get(currentPlayer),currentPlayer + 1, numberOfDays);
           if (numberOfRemainingRoom != 1){
             playerAction(currentPlayer);
           }
@@ -165,16 +165,6 @@ class BoardManager{
     else{
       castingOffice.upgradeWithFame(Integer.parseInt(outputArray[4]), currentPlayer);
     }
-
-    // if (currentPlayer.currentRoom.getName().equals("office")){
-    //   if (input[1].equals("$")){
-    //     castingOffice.upgradeWithMoney(Integer.parseInt(input[2]), currentPlayer);
-    //   }else if (input[1].equalsIgnoreCase("cr")){
-    //     castingOffice.upgradeWithFame(Integer.parseInt(input[2]), currentPlayer);
-    //   } else{
-    //     invalidInput(player);
-    //   }
-    // }
   }
 
   //takes player action and changes game state
@@ -203,6 +193,11 @@ class BoardManager{
     if (input[0].equalsIgnoreCase("who")){
       System.out.println((player+1));
     }
+    //////////////////Cheat
+    else if (input[0].equalsIgnoreCase("cheat")){
+      numberOfRemainingRoom = 1;
+    }
+    //////////////////
     else if (input[0].equalsIgnoreCase("test1")){
       numberOfRemainingRoom = 1;
     }
@@ -346,6 +341,7 @@ class BoardManager{
 
     }else if (input[0].equalsIgnoreCase("act")){
       act(player);
+      board.changeTextArea(currentPlayer , player + 1, numberOfDays);
 
 
     }else if (input[0].equalsIgnoreCase("end")){
@@ -429,21 +425,28 @@ class BoardManager{
     }
     else if (foundOnCard){
       //board.moveToRole(player, currentRoom.getSC().remainingRoles.get(index2-1).getArea());
-      currentRoom.getSC().remainingRoles.remove(index2-1);
+      int index = 0;
+      for(Role r :currentRoom.getSC().remainingRoles){
+        if(r.getName().equals(newRole.getName())){
+          currentRoom.getSC().remainingRoles.remove(index);
+        }
+        index++;
+      }
     }
     if (newRole.name.equals("")){
       System.out.println("invalid role");
     } else {
       player.currentRole = newRole;
       board.moveToRole(player, newRole.getArea());
-
     }
   }
 
   public void resetBoard(){
     int counter;
     //int p = 0;
-    board.NUKECARDS();
+    if (numberOfDays < 3){
+      board.NUKECARDS();
+    }
     for(Room r: roomList){
 
       if(r instanceof SetRoom){
@@ -620,49 +623,80 @@ class BoardManager{
         board.removeShotMarker(setRoom.shotMarkerData.get(setRoom.shotMarkers));
         //System.out.println("shot markers: "+setRoom.shotMarkers);
         if (setRoom.shotMarkers == 0){
-          //payout for on or off the card
-          if(onCard){
-            ArrayList<Integer> diceArray = new ArrayList<Integer>();
-            ArrayList<Integer> rollList = new ArrayList<Integer>();
-            int numberOfRoles = setRoom.sceneCard.roleArray.size();
-            for(int i = 0; i < budget; i++){
-              diceArray.add(dice.rollDice());
 
+
+          ArrayList<Player> playersOnCard = new ArrayList<Player>();
+          ArrayList<Integer> diceArray = new ArrayList<Integer>();
+          ArrayList<Integer> rollList = new ArrayList<Integer>();
+          int numberOfRoles = setRoom.sceneCard.roleArray.size();
+          for(int i = 0; i < budget; i++){
+            diceArray.add(dice.rollDice());
+
+          }
+          Collections.sort(diceArray);
+          Collections.reverse(diceArray);
+          int j = numberOfRoles -1;
+          for(int i = 0; i < diceArray.size(); i++){
+            rollList.add(diceArray.get(i));
+            j--;
+            if(j < 0){
+              j = numberOfRoles -1;
             }
-            Collections.sort(diceArray);
-            Collections.reverse(diceArray);
-            int j = numberOfRoles -1;
-            for(int i = 0; i < diceArray.size(); i++){
-              rollList.add(diceArray.get(i));
-              j--;
-              if(j < 0){
-                j = numberOfRoles -1;
+          }
+          //loop through every player, check if they are on set
+          for(int y = 0; y < listOfPlayer.size(); y++){
+            if (listOfPlayer.get(y).getRoom() == setRoom){
+              if (listOfPlayer.get(y).getRole().getOnCard()){
+                playersOnCard.add(listOfPlayer.get(y));
+                if (listOfPlayer.get(y) == currentPlayer){
+                  bank.setFame(currentPlayer, 2);
+                }
               }
-            }
-            for(int y = 0; y < listOfPlayer.size(); y++){
-              if (listOfPlayer.get(y).getRoom() == setRoom){
-                board.movePlayer(listOfPlayer.get(y));
-                listOfPlayer.get(y).roleComplete();
-              }
-              Role aRole = listOfPlayer.get(y).currentRole;
-              for (int i = 0; i < numberOfRoles; i++){
-                if (aRole != null && aRole.getName().equals(setRoom.sceneCard.roleArray.get(i).getName())){
-                  bank.setMoney(listOfPlayer.get(y), rollList.get(i));
+              else{
+                bank.setMoney(listOfPlayer.get(y), listOfPlayer.get(y).getRole().getRank());
+                if(listOfPlayer.get(y) == currentPlayer){
+                  bank.setMoney(currentPlayer, 1);
+                  bank.setFame(currentPlayer, 1);
                 }
               }
             }
-
           }
-          else{
-            for(int y = 0; y < listOfPlayer.size(); y++){
-              if (listOfPlayer.get(y).getRoom() == setRoom){
-                board.movePlayer(listOfPlayer.get(y));
-                listOfPlayer.get(y).roleComplete();
+          if (!playersOnCard.isEmpty()){
+            int temp;
+            Player tempPlayer;
+            LinkedList<Player> playerArray = new LinkedList<Player>();
+            for (Player aPlayer : playersOnCard){
+              if(playerArray.isEmpty()){
+                playerArray.add(aPlayer);
+              }
+              else {
+                for(int i = 0; i< playerArray.size(); i++){
+                  if(aPlayer.getRole().getRank() > playerArray.get(i).getRole().getRank()){
+                    if(i == playerArray.size()-1){
+                      playerArray.addLast(aPlayer);
+                    }
+                  }
+                  else{
+                    playerArray.add(i,aPlayer);
+                  }
+                }
               }
             }
-            bank.setMoney(currentPlayer, currentPlayer.rank);
-            bank.setMoney(currentPlayer, 1);
-            bank.setFame(currentPlayer, 1);
+            Collections.reverse(playerArray);
+            int k = 0;
+            for (int i = 0; i < rollList.size(); i++){
+              bank.setMoney(playerArray.get(k),rollList.get(i));
+              System.out.println(rollList.get(i));
+              if (k == playerArray.size() - 1){
+                k = 0;
+              }
+            }
+          }
+          for(int y = 0; y < listOfPlayer.size(); y++){
+            if (listOfPlayer.get(y).getRoom() == setRoom){
+              board.movePlayer(listOfPlayer.get(y));
+              listOfPlayer.get(y).roleComplete();
+            }
           }
           numberOfRemainingRoom--;
           setRoom.completeRoom();
@@ -672,16 +706,19 @@ class BoardManager{
           int no = 0;
           if(onCard){
             bank.setFame(currentPlayer, 2);
+            //board.changeTextArea(currentPlayer ,currentPlayer.getPlayerNum() +  1, numberOfDays);
           }
           else{
             bank.setMoney(currentPlayer, 1);
             bank.setFame(currentPlayer, 1);
+            //board.changeTextArea(currentPlayer ,currentPlayer.getPlayerNum() +  1, numberOfDays);
           }
         }
       }
       else{
         if (!onCard){
           bank.setMoney(currentPlayer,1);
+          //board.changeTextArea(currentPlayer ,currentPlayer.getPlayerNum() +  1, numberOfDays);
         }
       }
     }

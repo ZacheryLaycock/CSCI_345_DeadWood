@@ -39,6 +39,7 @@ public class BoardLayersListener extends JFrame {
   JButton bEnd;
   JButton selectButton;
   JButton bUpgrade;
+  JButton bCheat;
 
 
   String current = "";
@@ -57,6 +58,7 @@ public class BoardLayersListener extends JFrame {
   boardMouseListener bEndListener;
   boardMouseListener bUpgradeListener;
   boardMouseListener bML;
+  boardMouseListener bCheatListener;
   // Constructor
 
   JTextArea textArea;
@@ -77,7 +79,7 @@ public class BoardLayersListener extends JFrame {
        boardlabel.setBounds(0,0,icon.getIconWidth(),icon.getIconHeight());
 
        // Add the board to the lowest layer
-       bPane.add(boardlabel, new Integer(0));
+       bPane.add(boardlabel, new Integer(1));
 
        // Set the size of the GUI
        setSize(icon.getIconWidth()+400,icon.getIconHeight());
@@ -134,7 +136,14 @@ public class BoardLayersListener extends JFrame {
        bEnd.setBounds(icon.getIconWidth()+10,150,100, 20);
        bEndListener = new boardMouseListener();
        bEnd.addMouseListener(bEndListener);
-
+///////////////////
+       //Cheats:
+       bCheat = new JButton("CHEAT");
+       bCheat.setBackground(Color.white);
+       bCheat.setBounds(icon.getIconWidth()+10,240,100, 20);
+       bCheatListener = new boardMouseListener();
+       bCheat.addMouseListener(bCheatListener);
+////////////////////
        bUpgrade = new JButton("Upgrade");
        bUpgrade.setBackground(Color.white);
        bUpgrade.setBounds(icon.getIconWidth()+10,180,100, 20);
@@ -147,7 +156,7 @@ public class BoardLayersListener extends JFrame {
 
        textArea = new JTextArea();
        textArea.setPreferredSize(new Dimension(100,100));
-       textArea.setBounds(icon.getIconWidth()+10,775,200,200);
+       textArea.setBounds(icon.getIconWidth()+10,750,200,200);
        textArea.setEditable(false);
        textArea.setBackground(bPane.getBackground());
        textArea.setFont(textArea.getFont().deriveFont(18f));
@@ -176,6 +185,7 @@ public class BoardLayersListener extends JFrame {
        bPane.add(bUpgrade ,new Integer(2));
        bPane.add(textArea, new Integer(2));
        bPane.add(rollArea, new Integer(2));
+       bPane.add(bCheat, new Integer(2));
        selectButton.setVisible(false);
 
 
@@ -266,7 +276,15 @@ public class BoardLayersListener extends JFrame {
   }
 
   public void NUKECARDS(){
+    System.out.println("WE HERE MOTHA FUCKAS!!!");
+    for (JLabel card: cards){
+      card.setVisible(false);
+      bPane.remove(card);
+      System.out.println("hi");
+
+    }
     cards.clear();
+    //System.out.print(cards.get(0) + " asdfsad " + cards.get(1));
   }
 
 
@@ -302,7 +320,7 @@ public class BoardLayersListener extends JFrame {
       }
       current = "";
       while(current.equals("")){
-        System.out.println("");
+        System.out.print("");
       }
       current = "";
 
@@ -348,9 +366,10 @@ public class BoardLayersListener extends JFrame {
 
 
 
-  public void changeTextArea(Player currentPlayer, int playerNum){
+  public void changeTextArea(Player currentPlayer, int playerNum, int day){
     textArea.setText("");
     textArea.append("Player : " + playerNum + "\n" +
+                    "Day : " + day + "\n" +
                     "Rank : " + currentPlayer.getRank() + "\n" +
                     "Money : " + currentPlayer.getMoney() + "\n" +
                     "Fame : " + currentPlayer.getFame() + "\n");
@@ -465,6 +484,10 @@ public class BoardLayersListener extends JFrame {
 
          if (e.getSource()== bAct){
             current = "act";
+         }
+         //////////////Cheat:
+         else if (e.getSource()==bCheat){
+            current = "cheat";
          }
          else if (e.getSource()== bWork){
             current = "work";
